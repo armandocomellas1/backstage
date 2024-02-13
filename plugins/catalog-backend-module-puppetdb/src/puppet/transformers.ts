@@ -37,7 +37,6 @@ export const defaultResourceTransformer: ResourceTransformer = async (
     ? 'virtual-machine'
     : 'physical-server';
   const kernel = node.facts?.data?.find(e => e.name === 'kernel')?.value;
-  const latest_report_status = node.latest_report_status;
 
   return {
     apiVersion: 'backstage.io/v1beta1',
@@ -51,12 +50,7 @@ export const defaultResourceTransformer: ResourceTransformer = async (
       description: node.facts?.data
         ?.find(e => e.name === 'ipaddress')
         ?.value?.toString(),
-      tags: kernel
-        ? [
-            kernel.toString().toLocaleLowerCase('en-US'),
-            latest_report_status.toString().toLocaleLowerCase('en-US'),
-          ]
-        : [],
+      tags: kernel ? [kernel.toString().toLocaleLowerCase('en-US')] : [],
     },
     spec: {
       type: type,

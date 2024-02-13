@@ -32,16 +32,8 @@ export async function fetchContents(options: {
   baseUrl?: string;
   fetchUrl?: string;
   outputPath: string;
-  token?: string;
 }) {
-  const {
-    reader,
-    integrations,
-    baseUrl,
-    fetchUrl = '.',
-    outputPath,
-    token,
-  } = options;
+  const { reader, integrations, baseUrl, fetchUrl = '.', outputPath } = options;
 
   const fetchUrlIsAbsolute = isFetchUrlAbsolute(fetchUrl);
 
@@ -53,7 +45,7 @@ export async function fetchContents(options: {
   } else {
     const readUrl = getReadUrl(fetchUrl, baseUrl, integrations);
 
-    const res = await reader.readTree(readUrl, { token });
+    const res = await reader.readTree(readUrl);
     await fs.ensureDir(outputPath);
     await res.dir({ targetDir: outputPath });
   }
@@ -71,16 +63,8 @@ export async function fetchFile(options: {
   baseUrl?: string;
   fetchUrl?: string;
   outputPath: string;
-  token?: string;
 }) {
-  const {
-    reader,
-    integrations,
-    baseUrl,
-    fetchUrl = '.',
-    outputPath,
-    token,
-  } = options;
+  const { reader, integrations, baseUrl, fetchUrl = '.', outputPath } = options;
 
   const fetchUrlIsAbsolute = isFetchUrlAbsolute(fetchUrl);
 
@@ -92,7 +76,7 @@ export async function fetchFile(options: {
   } else {
     const readUrl = getReadUrl(fetchUrl, baseUrl, integrations);
 
-    const res = await reader.readUrl(readUrl, { token });
+    const res = await reader.readUrl(readUrl);
     await fs.ensureDir(path.dirname(outputPath));
     const buffer = await res.buffer();
     await fs.outputFile(outputPath, buffer.toString());

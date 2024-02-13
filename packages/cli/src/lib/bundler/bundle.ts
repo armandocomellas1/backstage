@@ -25,7 +25,7 @@ import {
 import formatWebpackMessages from 'react-dev-utils/formatWebpackMessages';
 import { createConfig, resolveBaseUrl } from './config';
 import { BuildOptions } from './types';
-import { resolveBundlingPaths, resolveOptionalBundlingPaths } from './paths';
+import { resolveBundlingPaths } from './paths';
 import chalk from 'chalk';
 import { createDetectedModulesEntryPoint } from './packageDetection';
 
@@ -47,44 +47,18 @@ export async function buildBundle(options: BuildOptions) {
     targetPath: paths.targetPath,
   });
 
-  const commonConfigOptions = {
+  const config = await createConfig(paths, {
     ...options,
     checksEnabled: false,
     isDev: false,
     baseUrl: resolveBaseUrl(options.frontendConfig),
     getFrontendAppConfigs: () => options.frontendAppConfigs,
-  };
-  const configs = [
-    await createConfig(paths, {
-      ...commonConfigOptions,
-      additionalEntryPoints: detectedModulesEntryPoint,
-    }),
-  ];
-
-  const publicPaths = await resolveOptionalBundlingPaths({
-    entry: 'src/index-public-experimental',
-    dist: 'dist/public',
+    additionalEntryPoints: detectedModulesEntryPoint,
   });
-  if (publicPaths) {
-    console.log(
-      chalk.yellow(
-        `⚠️  WARNING: The app /public entry point is an experimental feature that may receive immediate breaking changes.`,
-      ),
-    );
-    configs.push(
-      await createConfig(publicPaths, {
-        ...commonConfigOptions,
-        publicSubPath: '/public',
-      }),
-    );
-  }
 
   const isCi = yn(process.env.CI, { default: false });
 
   const previousFileSizes = await measureFileSizesBeforeBuild(paths.targetDist);
-  const previousAuthSizes = publicPaths
-    ? await measureFileSizesBeforeBuild(publicPaths.targetDist)
-    : undefined;
   await fs.emptyDir(paths.targetDist);
 
   if (paths.targetPublic) {
@@ -102,43 +76,33 @@ export async function buildBundle(options: BuildOptions) {
     );
   }
 
-  const { stats } = await build(configs, isCi);
+  const { stats } = await build(config, isCi);
 
   if (!stats) {
     throw new Error('No stats returned');
   }
-  const [mainStats, authStats] = stats.stats;
 
   if (statsJsonEnabled) {
     // No @types/bfj
     await require('bfj').write(
       resolvePath(paths.targetDist, 'bundle-stats.json'),
-      mainStats.toJson(),
+      stats.toJson(),
     );
   }
 
   printFileSizesAfterBuild(
-    mainStats,
+    stats,
     previousFileSizes,
     paths.targetDist,
     WARN_AFTER_BUNDLE_GZIP_SIZE,
     WARN_AFTER_CHUNK_GZIP_SIZE,
   );
-  if (publicPaths && previousAuthSizes) {
-    printFileSizesAfterBuild(
-      authStats,
-      previousAuthSizes,
-      publicPaths.targetDist,
-      WARN_AFTER_BUNDLE_GZIP_SIZE,
-      WARN_AFTER_CHUNK_GZIP_SIZE,
-    );
-  }
 }
 
-async function build(configs: webpack.Configuration[], isCi: boolean) {
-  const stats = await new Promise<webpack.MultiStats | undefined>(
+async function build(config: webpack.Configuration, isCi: boolean) {
+  const stats = await new Promise<webpack.Stats | undefined>(
     (resolve, reject) => {
-      webpack(configs, (err, buildStats) => {
+      webpack(config, (err, buildStats) => {
         if (err) {
           if (err.message) {
             const { errors } = formatWebpackMessages({

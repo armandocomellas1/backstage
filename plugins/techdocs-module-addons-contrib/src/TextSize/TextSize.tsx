@@ -70,7 +70,7 @@ const StyledSlider = withStyles(theme => ({
     left: '50%',
     transform: 'scale(1) translate(-50%, -5px) !important',
     '& *': {
-      color: theme.palette.textSubtle,
+      color: theme.palette.common.black,
       fontSize: theme.typography.caption.fontSize,
       background: 'transparent',
     },

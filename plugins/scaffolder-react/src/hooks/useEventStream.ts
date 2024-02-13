@@ -62,14 +62,12 @@ type ReducerLogEntry = {
     message: string;
     output?: ScaffolderTaskOutput;
     error?: Error;
-    recoverStrategy?: 'none' | 'startOver';
   };
 };
 
 type ReducerAction =
   | { type: 'INIT'; data: ScaffolderTask }
   | { type: 'CANCELLED' }
-  | { type: 'RECOVERED'; data: ReducerLogEntry }
   | { type: 'LOGS'; data: ReducerLogEntry[] }
   | { type: 'COMPLETED'; data: ReducerLogEntry }
   | { type: 'ERROR'; data: Error };
@@ -107,19 +105,17 @@ function reducer(draft: TaskStream, action: ReducerAction) {
         const currentStepLog = draft.stepLogs?.[entry.body.stepId];
         const currentStep = draft.steps?.[entry.body.stepId];
 
-        if (currentStep) {
-          if (entry.body.status && entry.body.status !== currentStep.status) {
-            currentStep.status = entry.body.status;
+        if (entry.body.status && entry.body.status !== currentStep.status) {
+          currentStep.status = entry.body.status;
 
-            if (currentStep.status === 'processing') {
-              currentStep.startedAt = entry.createdAt;
-            }
+          if (currentStep.status === 'processing') {
+            currentStep.startedAt = entry.createdAt;
+          }
 
-            if (
-              ['cancelled', 'completed', 'failed'].includes(currentStep.status)
-            ) {
-              currentStep.endedAt = entry.createdAt;
-            }
+          if (
+            ['cancelled', 'completed', 'failed'].includes(currentStep.status)
+          ) {
+            currentStep.endedAt = entry.createdAt;
           }
         }
 
@@ -139,17 +135,6 @@ function reducer(draft: TaskStream, action: ReducerAction) {
 
     case 'CANCELLED': {
       draft.cancelled = true;
-      return;
-    }
-
-    case 'RECOVERED': {
-      for (const stepId in draft.steps) {
-        if (draft.steps.hasOwnProperty(stepId)) {
-          draft.steps[stepId].startedAt = undefined;
-          draft.steps[stepId].endedAt = undefined;
-          draft.steps[stepId].status = 'open';
-        }
-      }
       return;
     }
 
@@ -217,7 +202,6 @@ export const useTaskEventStream = (taskId: string): TaskStream => {
 
           subscription = observable.subscribe({
             next: event => {
-              retryCount = 1;
               switch (event.type) {
                 case 'log':
                   return collectedLogEvents.push(event);
@@ -227,9 +211,6 @@ export const useTaskEventStream = (taskId: string): TaskStream => {
                 case 'completion':
                   emitLogs();
                   dispatch({ type: 'COMPLETED', data: event });
-                  return undefined;
-                case 'recovered':
-                  dispatch({ type: 'RECOVERED', data: event });
                   return undefined;
                 default:
                   throw new Error(
@@ -245,18 +226,16 @@ export const useTaskEventStream = (taskId: string): TaskStream => {
               // just to restart the fetch process
               // details here https://github.com/backstage/backstage/issues/15002
 
-              const maxRetries = 3;
-
               if (!error.message) {
-                error.message = `We cannot connect at the moment, trying again in some seconds... Retrying (${
-                  retryCount > maxRetries ? maxRetries : retryCount
-                }/${maxRetries} retries)`;
+                error.message = `We cannot connect at the moment, trying again in some seconds... Retrying (${retryCount}/3 retries)`;
               }
 
-              setTimeout(() => {
-                retryCount += 1;
-                void startStreamLogProcess();
-              }, 15000);
+              if (retryCount <= 3) {
+                setTimeout(() => {
+                  retryCount += 1;
+                  startStreamLogProcess();
+                }, 15000);
+              }
 
               dispatch({ type: 'ERROR', data: error });
             },
@@ -268,7 +247,7 @@ export const useTaskEventStream = (taskId: string): TaskStream => {
           }
         },
       );
-    void startStreamLogProcess();
+    startStreamLogProcess();
     return () => {
       didCancel = true;
       if (subscription) {

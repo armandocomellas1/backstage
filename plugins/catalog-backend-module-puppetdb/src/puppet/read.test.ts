@@ -53,7 +53,6 @@ describe('readPuppetNodes', () => {
                 producer_timestamp: 'producer_time1',
                 producer: 'producer1',
                 environment: 'environment1',
-                latest_report_status: 'unchanged',
                 facts: {
                   data: [
                     {
@@ -85,7 +84,6 @@ describe('readPuppetNodes', () => {
                 hash: 'hash2',
                 producer_timestamp: 'producer_time2',
                 producer: 'producer2',
-                latest_report_status: 'unchanged',
                 environment: 'environment2',
                 facts: {
                   data: [

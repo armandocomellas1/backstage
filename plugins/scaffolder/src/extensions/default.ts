@@ -45,11 +45,6 @@ import {
 } from '../components/fields/MyGroupsPicker/MyGroupsPicker';
 
 import { SecretInput } from '../components/fields/SecretInput';
-import {
-  MultiEntityPicker,
-  MultiEntityPickerSchema,
-  validateMultiEntityPickerValidation,
-} from '../components/fields/MultiEntityPicker/MultiEntityPicker';
 
 export const DEFAULT_SCAFFOLDER_FIELD_EXTENSIONS = [
   {
@@ -92,11 +87,5 @@ export const DEFAULT_SCAFFOLDER_FIELD_EXTENSIONS = [
   {
     component: SecretInput,
     name: 'Secret',
-  },
-  {
-    component: MultiEntityPicker,
-    name: 'MultiEntityPicker',
-    schema: MultiEntityPickerSchema,
-    validation: validateMultiEntityPickerValidation,
   },
 ];

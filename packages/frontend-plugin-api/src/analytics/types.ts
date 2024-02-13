@@ -28,6 +28,9 @@ export type CommonAnalyticsContext = {
   /**
    * The nearest known parent extension where the event was captured.
    */
+  /**
+   * The nearest known parent extension where the event was captured.
+   */
   extensionId: string;
 };
 

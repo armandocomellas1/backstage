@@ -1,7 +1,5 @@
 # Azure Sites Plugin
 
-Azure Sites (Apps & Functions) plugin support for a given entity. View the current status of the site, quickly jump to site's Overview page, or Log Stream page.
-
 ![preview of Azure table](docs/functions-table.png)
 
 _Inspired by [roadie.io AWS Lamda plugin](https://roadie.io/backstage/plugins/aws-lambda/)_
@@ -16,7 +14,7 @@ The following sections will help you get the Azure plugin setup and running
 
 ### Azure Sites Backend
 
-You need to set up the [Azure Sites Backend plugin](https://github.com/backstage/backstage/tree/master/plugins/azure-sites-backend) before you move forward with any of these steps if you haven't already.
+You need to set up the Azure Sites Backend plugin before you move forward with any of these steps if you haven't already.
 
 ### Entity Annotation
 
@@ -50,7 +48,7 @@ azure.com/microsoft-web-sites: func-testapp
 
 ```sh
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage/plugin-azure-sites
+yarn add --cwd packages/app @backstage/plugin-azure-sites
 ```
 
 2. Add widget component to your Backstage instance:

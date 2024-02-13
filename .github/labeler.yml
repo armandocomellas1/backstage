@@ -1,62 +1,35 @@
 area:catalog:
-  - changed-files:
-      - any-glob-to-any-file:
-          - plugins/catalog/**/*
-          - plugins/catalog-*/**/*
-          - packages/catalog-*/**/*
-area:discoverability: # search + home
-  - changed-files:
-      - any-glob-to-any-file:
-          - plugins/search/**/*
-          - plugins/search-*/**/*
-          - packages/search-*/**/*
-          - plugins/home/**/*
-area:kubernetes:
-  - changed-files:
-      - any-glob-to-any-file:
-          - plugins/kubernetes/**/*
-          - plugins/kubernetes-*/**/*
-area:permission:
-  - changed-files:
-      - any-glob-to-any-file:
-          - plugins/permission-*/**/*
+  - plugins/catalog/**/*
+  - plugins/catalog-*/**/*
+  - packages/catalog-*/**/*
 area:scaffolder:
-  - changed-files:
-      - any-glob-to-any-file:
-          - plugins/scaffolder/**/*
-          - plugins/scaffolder-*/**/*
-area:techdocs:
-  - changed-files:
-      - any-glob-to-any-file:
-          - plugins/techdocs/**/*
-          - plugins/techdocs-*/**/*
-          - packages/techdocs-*/**/*
-auth:
-  - changed-files:
-      - any-glob-to-any-file:
-          - plugins/auth-*/**/*
-          - packages/core-app-api/src/apis/implementations/auth/**/*
-          - packages/core-app-api/src/lib/Auth*/**/*
-          - packages/core-plugin-api/src/apis/definitions/auth.ts
-documentation:
-  - changed-files:
-      - any-glob-to-any-file:
-          - docs/**/*
-homepage:
-  - changed-files:
-      - any-glob-to-any-file:
-          - plugins/home/**/*
-microsite:
-  - changed-files:
-      - any-glob-to-any-file:
-          - microsite/**/*
+  - plugins/scaffolder/**/*
+  - plugins/scaffolder-*/**/*
 search:
-  - changed-files:
-      - any-glob-to-any-file:
-          - plugins/search/**/*
-          - plugins/search-*/**/*
-          - packages/search-*/**/*
+  - plugins/search/**/*
+  - plugins/search-*/**/*
+  - packages/search-*/**/*
+homepage:
+  - plugins/home/**/*
+area:discoverability: # search + home
+  - plugins/search/**/*
+  - plugins/search-*/**/*
+  - packages/search-*/**/*
+  - plugins/home/**/*
+area:techdocs:
+  - plugins/techdocs/**/*
+  - plugins/techdocs-*/**/*
+  - packages/techdocs-*/**/*
+documentation:
+  - docs/**/*
+microsite:
+  - microsite/**/*
 storybook:
-  - changed-files:
-      - any-glob-to-any-file:
-          - storybook/**/*
+  - storybook/**/*
+auth:
+  - plugins/auth-backend/**/*
+  - packages/core-app-api/src/apis/implementations/auth/**/*
+  - packages/core-app-api/src/lib/Auth*/**/*
+  - packages/core-plugin-api/src/apis/definitions/auth.ts
+area:permission:
+  - plugins/permission-*/**/*

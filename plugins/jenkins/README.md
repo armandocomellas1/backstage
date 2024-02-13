@@ -14,7 +14,7 @@ Website: [https://jenkins.io/](https://jenkins.io/)
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage/plugin-jenkins
+yarn add --cwd packages/app @backstage/plugin-jenkins
 ```
 
 2. Add and configure the [jenkins-backend](../jenkins-backend) plugin according to it's instructions

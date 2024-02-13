@@ -17,7 +17,7 @@
 import { Entity } from '@backstage/catalog-model';
 import { catalogApiRef, entityRouteRef } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { waitFor, screen } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import React from 'react';
 import { GroupsExplorerContent } from '../GroupsExplorerContent';
 
@@ -73,24 +73,24 @@ describe('<GroupsExplorerContent />', () => {
     ];
     catalogApi.getEntities.mockResolvedValue({ items: entities });
 
-    await renderInTestApp(
+    const { getByText } = await renderInTestApp(
       <Wrapper>
         <GroupsExplorerContent />
       </Wrapper>,
       mountedRoutes,
     );
 
-    await waitFor(() =>
+    await waitFor(() => {
       expect(
-        screen.getByRole('link', { name: 'my-namespace/group-a' }),
-      ).toBeInTheDocument(),
-    );
+        getByText('my-namespace/group-a', { selector: 'div' }),
+      ).toBeInTheDocument();
+    });
   });
 
   it('renders a custom title', async () => {
     catalogApi.getEntities.mockResolvedValue({ items: [] });
 
-    await renderInTestApp(
+    const { getByText } = await renderInTestApp(
       <Wrapper>
         <GroupsExplorerContent title="Our Teams" />
       </Wrapper>,
@@ -98,9 +98,7 @@ describe('<GroupsExplorerContent />', () => {
     );
 
     await waitFor(() =>
-      expect(
-        screen.getByText('Our Teams', { selector: 'h2' }),
-      ).toBeInTheDocument(),
+      expect(getByText('Our Teams', { selector: 'h2' })).toBeInTheDocument(),
     );
   });
 
@@ -108,7 +106,7 @@ describe('<GroupsExplorerContent />', () => {
     const catalogError = new Error('Network timeout');
     catalogApi.getEntities.mockRejectedValueOnce(catalogError);
 
-    await renderInTestApp(
+    const { getAllByText } = await renderInTestApp(
       <Wrapper>
         <GroupsExplorerContent />
       </Wrapper>,
@@ -116,7 +114,7 @@ describe('<GroupsExplorerContent />', () => {
     );
 
     await waitFor(() =>
-      expect(screen.getAllByText(/Error: Network timeout/).length).not.toBe(0),
+      expect(getAllByText(/Error: Network timeout/).length).not.toBe(0),
     );
   });
 });

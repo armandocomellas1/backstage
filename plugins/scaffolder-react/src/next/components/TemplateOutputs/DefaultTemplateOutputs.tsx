@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 import { InfoCard, MarkdownContent } from '@backstage/core-components';
-import {
-  ScaffolderOutputText,
-  ScaffolderTaskOutput,
-} from '@backstage/plugin-scaffolder-react';
+import { ScaffolderTaskOutput } from '@backstage/plugin-scaffolder-react';
 import { Box, Paper } from '@material-ui/core';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { LinkOutputs } from './LinkOutputs';
 import { TextOutputs } from './TextOutputs';
 
@@ -33,17 +30,8 @@ export const DefaultTemplateOutputs = (props: {
 }) => {
   const { output } = props;
   const [textOutputIndex, setTextOutputIndex] = useState<number | undefined>(
-    undefined,
+    output?.text?.length ? 0 : undefined,
   );
-
-  useEffect(() => {
-    if (textOutputIndex === undefined && output?.text) {
-      const defaultIndex = output.text.findIndex(
-        (t: ScaffolderOutputText) => t.default,
-      );
-      setTextOutputIndex(defaultIndex >= 0 ? defaultIndex : 0);
-    }
-  }, [textOutputIndex, output]);
 
   const textOutput = useMemo(
     () =>

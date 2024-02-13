@@ -1,2 +1,6 @@
 
-export const pluginId = "{{appName}}";
+{{#servers}}
+{{#-last}}
+export const pluginId = "{{url}}";
+{{/-last}}
+{{/servers}}

@@ -19,18 +19,10 @@ import {
   coreExtensionData,
   createExtension,
 } from '@backstage/frontend-plugin-api';
-import {
-  createExtensionTester,
-  renderInTestApp,
-} from '@backstage/frontend-test-utils';
+import { createExtensionTester } from '@backstage/frontend-test-utils';
 import { screen } from '@testing-library/react';
 import { compatWrapper } from './compatWrapper';
-import {
-  createRouteRef,
-  useApp,
-  useRouteRef,
-} from '@backstage/core-plugin-api';
-import { convertLegacyRouteRef } from '../convertLegacyRouteRef';
+import { useApp } from '@backstage/core-plugin-api';
 
 describe('BackwardsCompatProvider', () => {
   it('should convert the app context', () => {
@@ -68,23 +60,8 @@ describe('BackwardsCompatProvider', () => {
 
     expect(screen.getByTestId('ctx').textContent).toMatchInlineSnapshot(`
       "plugins:
-      components: NotFoundErrorPage, BootErrorPage, Progress, Router, ErrorBoundaryFallback
+      components: Progress, Router, NotFoundErrorPage, BootErrorPage, ErrorBoundaryFallback
       icons: brokenImage, catalog, scaffolder, techdocs, search, chat, dashboard, docs, email, github, group, help, kind:api, kind:component, kind:domain, kind:group, kind:location, kind:system, kind:user, kind:resource, kind:template, user, warning"
     `);
-  });
-
-  it('should convert the routing context', () => {
-    const routeRef = createRouteRef({ id: 'test' });
-
-    function Component() {
-      const link = useRouteRef(routeRef);
-      return <div>link: {link()}</div>;
-    }
-
-    renderInTestApp(compatWrapper(<Component />), {
-      mountedRoutes: { '/test': convertLegacyRouteRef(routeRef) },
-    });
-
-    expect(screen.getByText('link: /test')).toBeInTheDocument();
   });
 });

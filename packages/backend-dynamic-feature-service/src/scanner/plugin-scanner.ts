@@ -16,7 +16,7 @@
 import { Config } from '@backstage/config';
 import { ScannedPluginPackage, ScannedPluginManifest } from './types';
 import * as fs from 'fs/promises';
-import { Stats, lstatSync, existsSync } from 'fs';
+import { Stats, lstatSync } from 'fs';
 import * as chokidar from 'chokidar';
 import * as path from 'path';
 import * as url from 'url';
@@ -178,24 +178,22 @@ export class PluginScanner {
       if (platform === 'node') {
         if (this.preferAlpha) {
           const pluginHomeAlpha = path.resolve(pluginHome, 'alpha');
-          if (existsSync(pluginHomeAlpha)) {
-            if ((await fs.lstat(pluginHomeAlpha)).isDirectory()) {
-              const backstage = scannedPlugin.manifest.backstage;
-              try {
-                scannedPlugin = await this.scanDir(pluginHomeAlpha);
-              } catch (e) {
-                this.logger.error(
-                  `failed to load dynamic plugin manifest from '${pluginHomeAlpha}'`,
-                  e,
-                );
-                continue;
-              }
-              scannedPlugin.manifest.backstage = backstage;
-            } else {
-              this.logger.warn(
-                `skipping '${pluginHomeAlpha}' since it is not a directory`,
+          if ((await fs.lstat(pluginHomeAlpha)).isDirectory()) {
+            const backstage = scannedPlugin.manifest.backstage;
+            try {
+              scannedPlugin = await this.scanDir(pluginHomeAlpha);
+            } catch (e) {
+              this.logger.error(
+                `failed to load dynamic plugin manifest from '${pluginHomeAlpha}'`,
+                e,
               );
+              continue;
             }
+            scannedPlugin.manifest.backstage = backstage;
+          } else {
+            this.logger.warn(
+              `skipping '${pluginHomeAlpha}' since it is not a directory`,
+            );
           }
         }
       }

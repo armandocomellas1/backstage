@@ -15,7 +15,7 @@
  */
 import { IconComponent, useApp } from '@backstage/core-plugin-api';
 import { Button } from '@material-ui/core';
-import DescriptionIcon from '@material-ui/icons/Description';
+import WebIcon from '@material-ui/icons/Web';
 import React from 'react';
 import { ScaffolderTaskOutput } from '../../../api';
 
@@ -33,7 +33,7 @@ export const TextOutputs = (props: {
   const app = useApp();
 
   const iconResolver = (key?: string): IconComponent =>
-    app.getSystemIcon(key!) ?? DescriptionIcon;
+    app.getSystemIcon(key!) ?? WebIcon;
 
   return (
     <>

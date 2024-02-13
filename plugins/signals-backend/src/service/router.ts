@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  errorHandler,
-  PluginEndpointDiscovery,
-} from '@backstage/backend-common';
+import { errorHandler } from '@backstage/backend-common';
 import express, { NextFunction, Request, Response } from 'express';
 import Router from 'express-promise-router';
 import { LoggerService } from '@backstage/backend-plugin-api';
@@ -36,14 +33,13 @@ export interface RouterOptions {
   logger: LoggerService;
   eventBroker?: EventBroker;
   identity: IdentityApi;
-  discovery: PluginEndpointDiscovery;
 }
 
 /** @public */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, identity, discovery } = options;
+  const { logger, identity } = options;
   const manager = SignalManager.create(options);
   let subscribedToUpgradeRequests = false;
 
@@ -70,9 +66,9 @@ export async function createRouter(
     }
 
     subscribedToUpgradeRequests = true;
-    const apiUrl = await discovery.getBaseUrl('signals');
     server.on('upgrade', async (request, socket, head) => {
-      if (!request.url || !apiUrl.endsWith(request.url)) {
+      // TODO: Find a way to make this more generic
+      if (request.url !== '/api/signals') {
         return;
       }
 

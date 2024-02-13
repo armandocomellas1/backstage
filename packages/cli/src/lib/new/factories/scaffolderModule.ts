@@ -17,11 +17,10 @@
 import chalk from 'chalk';
 import { paths } from '../../paths';
 import { addCodeownersEntry, getCodeownersFilePath } from '../../codeowners';
-import { CreateContext, createFactory } from '../types';
+import { createFactory, CreateContext } from '../types';
 import { Task } from '../../tasks';
 import { ownerPrompt } from './common/prompts';
 import { executePluginPackageTemplate } from './common/tasks';
-import { resolvePackageName } from './common/util';
 
 type Options = {
   id: string;
@@ -56,11 +55,14 @@ export const scaffolderModule = createFactory<Options>({
     const { id } = options;
     const slug = `scaffolder-backend-module-${id}`;
 
-    const name = resolvePackageName({
-      baseName: slug,
-      scope: ctx.scope,
-      plugin: true,
-    });
+    let name = `backstage-plugin-${slug}`;
+    if (ctx.scope) {
+      if (ctx.scope === 'backstage') {
+        name = `@backstage/plugin-${slug}`;
+      } else {
+        name = `@${ctx.scope}/backstage-plugin-${slug}`;
+      }
+    }
 
     Task.log();
     Task.log(`Creating module ${chalk.cyan(name)}`);

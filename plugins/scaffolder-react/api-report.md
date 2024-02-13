@@ -152,7 +152,7 @@ export type ListActionsResponse = Array<Action>;
 
 // @public
 export type LogEvent = {
-  type: 'log' | 'completion' | 'cancelled' | 'recovered';
+  type: 'log' | 'completion' | 'cancelled';
   body: {
     message: string;
     stepId?: string;
@@ -277,7 +277,6 @@ export type ScaffolderOutputText = {
   title?: string;
   icon?: string;
   content?: string;
-  default?: boolean;
 };
 
 // @public

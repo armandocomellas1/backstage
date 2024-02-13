@@ -17,7 +17,6 @@ import {
   createBackendPlugin,
   coreServices,
 } from '@backstage/backend-plugin-api';
-import { Entity } from '@backstage/catalog-model';
 import { CatalogBuilder, CatalogPermissionRuleInput } from './CatalogBuilder';
 import {
   CatalogAnalysisExtensionPoint,
@@ -41,10 +40,6 @@ class CatalogProcessingExtensionPointImpl
   #processors = new Array<CatalogProcessor>();
   #entityProviders = new Array<EntityProvider>();
   #placeholderResolvers: Record<string, PlaceholderResolver> = {};
-  #onProcessingErrorHandler?: (event: {
-    unprocessedEntity: Entity;
-    errors: Error[];
-  }) => Promise<void> | void;
 
   addProcessor(
     ...processors: Array<CatalogProcessor | Array<CatalogProcessor>>
@@ -66,15 +61,6 @@ class CatalogProcessingExtensionPointImpl
     this.#placeholderResolvers[key] = resolver;
   }
 
-  setOnProcessingErrorHandler(
-    handler: (event: {
-      unprocessedEntity: Entity;
-      errors: Error[];
-    }) => Promise<void> | void,
-  ) {
-    this.#onProcessingErrorHandler = handler;
-  }
-
   get processors() {
     return this.#processors;
   }
@@ -85,10 +71,6 @@ class CatalogProcessingExtensionPointImpl
 
   get placeholderResolvers() {
     return this.#placeholderResolvers;
-  }
-
-  get onProcessingErrorHandler() {
-    return this.#onProcessingErrorHandler;
   }
 }
 
@@ -180,11 +162,6 @@ export const catalogPlugin = createBackendPlugin({
           scheduler,
           logger: winstonLogger,
         });
-        if (processingExtensions.onProcessingErrorHandler) {
-          builder.subscribe({
-            onProcessingError: processingExtensions.onProcessingErrorHandler,
-          });
-        }
         builder.addProcessor(...processingExtensions.processors);
         builder.addEntityProvider(...processingExtensions.entityProviders);
         Object.entries(processingExtensions.placeholderResolvers).forEach(

@@ -106,9 +106,7 @@ export const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
           <Typography variant="body2" className={classes.label}>
             Description
           </Typography>
-          {playlist.description && (
-            <MarkdownContent content={playlist.description} />
-          )}
+          <MarkdownContent content={playlist.description ?? ''} />
         </Box>
         <Box className={classes.box}>
           <Typography variant="body2" className={classes.label}>

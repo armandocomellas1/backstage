@@ -29,7 +29,6 @@ export {
   OwnedEntityPickerFieldExtension,
   MyGroupsPickerFieldExtension,
   RepoUrlPickerFieldExtension,
-  MultiEntityPickerFieldExtension,
   ScaffolderPage,
   scaffolderPlugin,
 } from './plugin';

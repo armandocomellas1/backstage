@@ -37,12 +37,6 @@ export interface CatalogProcessingExtensionPoint {
     ...providers: Array<EntityProvider | Array<EntityProvider>>
   ): void;
   addPlaceholderResolver(key: string, resolver: PlaceholderResolver): void;
-  setOnProcessingErrorHandler(
-    handler: (event: {
-      unprocessedEntity: Entity;
-      errors: Error[];
-    }) => Promise<void> | void,
-  ): void;
 }
 
 /**

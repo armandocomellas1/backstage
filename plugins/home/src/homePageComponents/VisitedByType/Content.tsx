@@ -15,11 +15,10 @@
  */
 
 import React, { useEffect } from 'react';
-import { createFilterByQueryParamFromConfig } from '../../api/config';
 import { VisitedByType } from './VisitedByType';
-import { Visit, visitsApiRef } from '../../api';
+import { Visit, visitsApiRef } from '../../api/VisitsApi';
 import { ContextValueOnly, useContext } from './Context';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
 
 /** @public */
@@ -61,31 +60,22 @@ export const Content = ({
     setContext(state => ({ ...state, ...context }));
   }, [setContext, kind, visits, loading, numVisitsOpen, numVisitsTotal]);
 
-  const config = useApi(configApiRef);
   // Fetches data from visitsApi in case visits and loading are not provided
   const visitsApi = useApi(visitsApiRef);
   const { loading: reqLoading } = useAsync(async () => {
     if (!visits && !loading && kind === 'recent') {
-      const filterBy = createFilterByQueryParamFromConfig(
-        config.getOptionalConfigArray('home.recentVisits.filterBy') ?? [],
-      );
       return await visitsApi
         .list({
           limit: numVisitsTotal ?? 8,
           orderBy: [{ field: 'timestamp', direction: 'desc' }],
-          ...(filterBy && { filterBy }),
         })
         .then(setVisits);
     }
     if (!visits && !loading && kind === 'top') {
-      const filterBy = createFilterByQueryParamFromConfig(
-        config.getOptionalConfigArray('home.topVisits.filterBy') ?? [],
-      );
       return await visitsApi
         .list({
           limit: numVisitsTotal ?? 8,
           orderBy: [{ field: 'hits', direction: 'desc' }],
-          ...(filterBy && { filterBy }),
         })
         .then(setVisits);
     }

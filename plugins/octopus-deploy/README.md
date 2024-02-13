@@ -14,7 +14,7 @@ To get started, first install the plugin with the following command:
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage/plugin-octopus-deploy
+yarn add --cwd packages/app @backstage/plugin-octopus-deploy
 ```
 
 ### Setup

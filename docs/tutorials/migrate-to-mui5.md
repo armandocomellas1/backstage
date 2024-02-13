@@ -19,7 +19,7 @@ By default, the `UnifiedThemeProvider` is already used. If you add a custom them
     themes: [
       {
         // ...
-        Provider: ({ children }) => (
+        provider: ({ children }) => (
 -         <ThemeProvider theme={lightTheme}>.
 -           <CssBaseline>{children}</CssBaseline>.
 -         </ThemeProvider

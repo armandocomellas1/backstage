@@ -211,8 +211,8 @@ describe('RouteTracker', () => {
       action: 'navigate',
       attributes: {},
       context: {
-        extensionId: 'app',
-        pluginId: 'app',
+        extensionId: 'App',
+        pluginId: 'root',
       },
       subject: '/not-routable-extension',
       value: undefined,
@@ -221,8 +221,8 @@ describe('RouteTracker', () => {
       action: 'click',
       attributes: undefined,
       context: {
-        extensionId: 'app',
-        pluginId: 'app',
+        extensionId: 'App',
+        pluginId: 'root',
       },
       subject: 'test',
       value: undefined,

@@ -20,7 +20,6 @@ import {
   Chip,
   ListItemIcon,
   ListItemText,
-  Typography,
   makeStyles,
 } from '@material-ui/core';
 import { Link } from '@backstage/core-components';
@@ -57,7 +56,6 @@ export interface CatalogSearchResultListItemProps {
   result?: IndexableDocument;
   highlight?: ResultHighlight;
   rank?: number;
-  lineClamp?: number;
 }
 
 /** @public */
@@ -96,27 +94,15 @@ export function CatalogSearchResultListItem(
             </Link>
           }
           secondary={
-            <Typography
-              component="span"
-              style={{
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: props.lineClamp,
-                overflow: 'hidden',
-              }}
-              color="textSecondary"
-              variant="body2"
-            >
-              {highlight?.fields.text ? (
-                <HighlightedSearchResultText
-                  text={highlight.fields.text}
-                  preTag={highlight.preTag}
-                  postTag={highlight.postTag}
-                />
-              ) : (
-                result.text
-              )}
-            </Typography>
+            highlight?.fields.text ? (
+              <HighlightedSearchResultText
+                text={highlight.fields.text}
+                preTag={highlight.preTag}
+                postTag={highlight.postTag}
+              />
+            ) : (
+              result.text
+            )
           }
         />
         <Box>

@@ -1,8 +1,5 @@
 # @backstage/plugin-scaffolder-backend-module-bitbucket
 
-**Deprecated!**
+The bitbucket module for [@backstage/plugin-scaffolder-backend](https://www.npmjs.com/package/@backstage/plugin-scaffolder-backend).
 
-Please use one of the following modules instead:
-
-- [@backstage/plugin-scaffolder-backend-module-bitbucket-cloud](https://www.npmjs.com/package/@backstage/plugin-scaffolder-backend-module-bitbucket-cloud)
-- [@backstage/plugin-scaffolder-backend-module-bitbucket-server](https://www.npmjs.com/package/@backstage/plugin-scaffolder-backend-module-bitbucket-server).
+_This plugin was created through the Backstage CLI_

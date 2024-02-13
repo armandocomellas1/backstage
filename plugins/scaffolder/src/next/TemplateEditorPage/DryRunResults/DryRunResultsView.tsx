@@ -27,8 +27,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDryRun } from '../DryRunContext';
 import { DryRunResultsSplitView } from './DryRunResultsSplitView';
 import { FileBrowser } from '../../../components/FileBrowser';
-import { TaskPageLinks } from './TaskPageLinks';
-import { TaskStatusStepper } from './TaskStatusStepper';
+import { TaskPageLinks } from '../../../legacy/TaskPage/TaskPageLinks';
+import { TaskStatusStepper } from '../../../legacy/TaskPage/TaskPage';
 
 const useStyles = makeStyles({
   root: {

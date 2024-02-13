@@ -16,15 +16,15 @@ export class DefaultSignalService implements SignalService {
 
 // @public (undocumented)
 export type SignalPayload = {
-  recipients: string[] | string | null;
+  recipients: string[] | null;
   channel: string;
   message: JsonObject;
 };
 
 // @public (undocumented)
-export interface SignalService {
+export type SignalService = {
   publish(signal: SignalPayload): Promise<void>;
-}
+};
 
 // @public (undocumented)
 export const signalService: ServiceRef<SignalService, 'plugin'>;

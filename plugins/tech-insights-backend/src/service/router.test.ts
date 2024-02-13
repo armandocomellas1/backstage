@@ -24,10 +24,8 @@ import {
 import { ConfigReader } from '@backstage/config';
 import request from 'supertest';
 import express from 'express';
-import {
-  PersistenceContext,
-  TechInsightsStore,
-} from '@backstage/plugin-tech-insights-node';
+import { PersistenceContext } from './persistence/persistenceContext';
+import { TechInsightsStore } from '@backstage/plugin-tech-insights-node';
 import { DateTime } from 'luxon';
 import { Knex } from 'knex';
 import { TaskScheduler } from '@backstage/backend-tasks';

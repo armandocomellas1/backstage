@@ -101,10 +101,6 @@ export const TemplateCard = (props: TemplateCardProps) => {
   const app = useApp();
   const iconResolver = (key?: string): IconComponent =>
     key ? app.getSystemIcon(key) ?? LanguageIcon : LanguageIcon;
-  const hasTags = !!template.metadata.tags?.length;
-  const hasLinks =
-    !!props.additionalLinks?.length || !!template.metadata.links?.length;
-  const displayDefaultDivider = !hasTags && !hasLinks;
 
   return (
     <Card>
@@ -119,20 +115,15 @@ export const TemplateCard = (props: TemplateCardProps) => {
               />
             </Box>
           </Grid>
-          {displayDefaultDivider && (
-            <Grid item xs={12}>
-              <Divider data-testid="template-card-separator" />
-            </Grid>
-          )}
-          {hasTags && (
+          {(template.metadata.tags?.length ?? 0) > 0 && (
             <>
               <Grid item xs={12}>
-                <Divider data-testid="template-card-separator--tags" />
+                <Divider />
               </Grid>
               <Grid item xs={12}>
                 <Grid container spacing={2}>
                   {template.metadata.tags?.map(tag => (
-                    <Grid key={`grid-${tag}`} item>
+                    <Grid item>
                       <Chip
                         style={{ margin: 0 }}
                         size="small"
@@ -145,10 +136,10 @@ export const TemplateCard = (props: TemplateCardProps) => {
               </Grid>
             </>
           )}
-          {hasLinks && (
+          {(props.additionalLinks || template.metadata.links?.length) && (
             <>
               <Grid item xs={12}>
-                <Divider data-testid="template-card-separator--links" />
+                <Divider />
               </Grid>
               <Grid item xs={12}>
                 <Grid container spacing={2}>

@@ -14,7 +14,7 @@ Main areas covered by this plugin currently are:
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage/plugin-tech-insights
+yarn add --cwd packages/app @backstage/plugin-tech-insights
 ```
 
 ### Add boolean checks overview (Scorecards) page to the EntityPage:

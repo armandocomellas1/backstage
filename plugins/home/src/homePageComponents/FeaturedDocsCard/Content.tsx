@@ -23,16 +23,11 @@ import {
   Progress,
   ErrorPanel,
 } from '@backstage/core-components';
-import {
-  catalogApiRef,
-  CatalogApi,
-  EntityDisplayName,
-} from '@backstage/plugin-catalog-react';
+import { catalogApiRef, CatalogApi } from '@backstage/plugin-catalog-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { EntityFilterQuery } from '@backstage/catalog-client';
 
 import { makeStyles, Typography } from '@material-ui/core';
-import { stringifyEntityRef } from '@backstage/catalog-model';
 
 /**
  * Props customizing the <FeaturedDocsCard/> component.
@@ -121,7 +116,7 @@ export const Content = (props: FeaturedDocsCardProps): JSX.Element => {
               }/`
             }
           >
-            <EntityDisplayName entityRef={stringifyEntityRef(d)} />
+            {d.metadata.title}
           </Link>
           {d.metadata.description && (
             <Typography className={styles.docDescription}>

@@ -29,7 +29,6 @@ import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
 import {
   compatWrapper,
   convertLegacyRouteRef,
-  convertLegacyRouteRefs,
 } from '@backstage/core-compat-api';
 import { scmIntegrationsApiRef } from '@backstage/integration-react';
 import { scaffolderApiRef } from '@backstage/plugin-scaffolder-react';
@@ -50,6 +49,8 @@ export {
   type TemplateListPageProps,
   type TemplateWizardPageProps,
 } from './next';
+
+export * from './legacy';
 
 const scaffolderApi = createApiExtension({
   factory: createApiFactory({
@@ -86,17 +87,17 @@ const scaffolderNavItem = createNavItemExtension({
 /** @alpha */
 export default createPlugin({
   id: 'scaffolder',
-  routes: convertLegacyRouteRefs({
-    root: rootRouteRef,
-    selectedTemplate: selectedTemplateRouteRef,
-    ongoingTask: scaffolderTaskRouteRef,
-    actions: actionsRouteRef,
-    listTasks: scaffolderListTaskRouteRef,
-    edit: editRouteRef,
-  }),
-  externalRoutes: convertLegacyRouteRefs({
-    registerComponent: registerComponentRouteRef,
-    viewTechDoc: viewTechDocRouteRef,
-  }),
+  routes: {
+    root: convertLegacyRouteRef(rootRouteRef),
+    selectedTemplate: convertLegacyRouteRef(selectedTemplateRouteRef),
+    ongoingTask: convertLegacyRouteRef(scaffolderTaskRouteRef),
+    actions: convertLegacyRouteRef(actionsRouteRef),
+    listTasks: convertLegacyRouteRef(scaffolderListTaskRouteRef),
+    edit: convertLegacyRouteRef(editRouteRef),
+  },
+  externalRoutes: {
+    registerComponent: convertLegacyRouteRef(registerComponentRouteRef),
+    viewTechDoc: convertLegacyRouteRef(viewTechDocRouteRef),
+  },
   extensions: [scaffolderApi, scaffolderPage, scaffolderNavItem],
 });

@@ -24,7 +24,6 @@ describe('AuthorizedLocationService', () => {
     listLocations: jest.fn(),
     getLocation: jest.fn(),
     deleteLocation: jest.fn(),
-    getLocationByEntity: jest.fn(),
   };
   const fakePermissionApi = {
     authorize: jest.fn(),
@@ -143,38 +142,6 @@ describe('AuthorizedLocationService', () => {
           authorizationToken: 'Bearer authtoken',
         }),
       ).rejects.toThrow(NotAllowedError);
-    });
-  });
-
-  describe('getLocationByEntity', () => {
-    it('calls underlying service to get location on ALLOW', async () => {
-      mockAllow();
-      const service = createService();
-
-      await service.getLocationByEntity(
-        { kind: 'c', namespace: 'ns', name: 'n' },
-        {
-          authorizationToken: 'Bearer authtoken',
-        },
-      );
-
-      expect(fakeLocationService.getLocationByEntity).toHaveBeenCalledWith({
-        kind: 'c',
-        namespace: 'ns',
-        name: 'n',
-      });
-    });
-
-    it('throws error on DENY', async () => {
-      mockDeny();
-      const service = createService();
-
-      await expect(() =>
-        service.getLocationByEntity(
-          { kind: 'c', namespace: 'ns', name: 'n' },
-          { authorizationToken: 'Bearer authtoken' },
-        ),
-      ).rejects.toThrow(NotFoundError);
     });
   });
 });

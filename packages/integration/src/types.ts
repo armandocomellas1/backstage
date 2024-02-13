@@ -108,12 +108,3 @@ export interface ScmIntegrationsGroup<T extends ScmIntegration> {
 export type ScmIntegrationsFactory<T extends ScmIntegration> = (options: {
   config: Config;
 }) => ScmIntegrationsGroup<T>;
-
-/**
- * Encapsulates information about the RateLimit state
- *
- * @public
- */
-export interface RateLimitInfo {
-  isRateLimited: boolean;
-}

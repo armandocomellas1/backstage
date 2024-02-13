@@ -38,7 +38,7 @@ events:
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/backend add @backstage/plugin-events-backend-module-aws-sqs
+yarn add --cwd packages/backend @backstage/plugin-events-backend-module-aws-sqs
 ```
 
 ```ts title="packages/backend/src/index.ts"

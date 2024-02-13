@@ -22,11 +22,6 @@ import {
   AnalyticsEventAttributes,
   IdentityApi,
 } from '@backstage/core-plugin-api';
-import {
-  AnalyticsApi as NewAnalyticsApi,
-  AnalyticsEvent as NewAnalyticsEvent,
-  AnalyticsContextValue as NewAnalyticsContextValue,
-} from '@backstage/frontend-plugin-api';
 import { Config } from '@backstage/config';
 import { DeferredCapture } from '../../../util';
 import {
@@ -45,7 +40,7 @@ type CustomDimensionOrMetricConfig = {
  * Google Analytics API provider for the Backstage Analytics API.
  * @public
  */
-export class GoogleAnalytics implements AnalyticsApi, NewAnalyticsApi {
+export class GoogleAnalytics implements AnalyticsApi {
   private readonly cdmConfig: CustomDimensionOrMetricConfig[];
   private customUserIdTransform?: (userEntityRef: string) => Promise<string>;
   private readonly capture: DeferredCapture;
@@ -162,18 +157,11 @@ export class GoogleAnalytics implements AnalyticsApi, NewAnalyticsApi {
    * pageview and the rest as custom events. All custom dimensions/metrics are
    * applied as they should be (set on pageview, merged object on events).
    */
-  captureEvent(event: AnalyticsEvent | NewAnalyticsEvent) {
+  captureEvent(event: AnalyticsEvent) {
     const { context, action, subject, value, attributes } = event;
     const customMetadata = this.getCustomDimensionMetrics(context, attributes);
 
-    const extensionId = context.extensionId || context.extension;
-    const category = extensionId ? String(extensionId) : 'App';
-
-    // The legacy default extension was 'App' and the new one is 'app'
-    if (
-      action === 'navigate' &&
-      category.toLocaleLowerCase('en-US').startsWith('app')
-    ) {
+    if (action === 'navigate' && context.extension === 'App') {
       this.capture.pageview(subject, customMetadata);
       return;
     }
@@ -196,7 +184,7 @@ export class GoogleAnalytics implements AnalyticsApi, NewAnalyticsApi {
     }
 
     this.capture.event({
-      category,
+      category: context.extension || 'App',
       action,
       label: subject,
       value,
@@ -209,7 +197,7 @@ export class GoogleAnalytics implements AnalyticsApi, NewAnalyticsApi {
    * Event Attributes, e.g. { dimension1: "some value", metric8: 42 }
    */
   private getCustomDimensionMetrics(
-    context: AnalyticsContextValue | NewAnalyticsContextValue,
+    context: AnalyticsContextValue,
     attributes: AnalyticsEventAttributes = {},
   ) {
     const customDimensionsMetrics: { [x: string]: string | number | boolean } =

@@ -161,12 +161,6 @@ export interface DependencyGraphProps<NodeData, EdgeData>
    */
   curve?: 'curveStepBefore' | 'curveMonotoneX';
   /**
-   * Controls if the arrow heads should be rendered or not.
-   *
-   * Default: false
-   */
-  showArrowHeads?: boolean;
-  /**
    * Controls if the graph should be contained or grow
    *
    * @remarks
@@ -207,7 +201,6 @@ export function DependencyGraph<NodeData, EdgeData>(
     defs,
     zoom = 'enabled',
     curve = 'curveMonotoneX',
-    showArrowHeads = false,
     fit = 'grow',
     ...svgProps
   } = props;
@@ -443,7 +436,6 @@ export function DependencyGraph<NodeData, EdgeData>(
                 render={renderLabel}
                 edge={edge}
                 curve={curve}
-                showArrowHeads={showArrowHeads}
               />
             );
           })}

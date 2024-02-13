@@ -20,11 +20,10 @@ import camelCase from 'lodash/camelCase';
 import upperFirst from 'lodash/upperFirst';
 import { paths } from '../../paths';
 import { addCodeownersEntry, getCodeownersFilePath } from '../../codeowners';
-import { CreateContext, createFactory } from '../types';
+import { createFactory, CreateContext } from '../types';
 import { addPackageDependency, Task } from '../../tasks';
 import { ownerPrompt, pluginIdPrompt } from './common/prompts';
 import { executePluginPackageTemplate } from './common/tasks';
-import { resolvePackageName } from './common/util';
 
 type Options = {
   id: string;
@@ -42,11 +41,9 @@ export const frontendPlugin = createFactory<Options>({
   async create(options: Options, ctx: CreateContext) {
     const { id } = options;
 
-    const name = resolvePackageName({
-      baseName: id,
-      scope: ctx.scope,
-      plugin: true,
-    });
+    const name = ctx.scope
+      ? `@${ctx.scope}/plugin-${id}`
+      : `backstage-plugin-${id}`;
     const extensionName = `${upperFirst(camelCase(id))}Page`;
 
     Task.log();

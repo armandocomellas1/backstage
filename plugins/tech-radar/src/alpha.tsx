@@ -27,7 +27,6 @@ import { SampleTechRadarApi } from './sample';
 import {
   compatWrapper,
   convertLegacyRouteRef,
-  convertLegacyRouteRefs,
 } from '@backstage/core-compat-api';
 import { rootRouteRef } from './plugin';
 
@@ -62,7 +61,7 @@ export const techRadarApi = createApiExtension({
 export default createPlugin({
   id: 'tech-radar',
   extensions: [techRadarPage, techRadarApi],
-  routes: convertLegacyRouteRefs({
-    root: rootRouteRef,
-  }),
+  routes: {
+    root: convertLegacyRouteRef(rootRouteRef),
+  },
 });

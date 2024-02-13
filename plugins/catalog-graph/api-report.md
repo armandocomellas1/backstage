@@ -123,7 +123,6 @@ export type EntityRelationsGraphProps = {
   renderNode?: DependencyGraphTypes.RenderNodeFunction<EntityNode>;
   renderLabel?: DependencyGraphTypes.RenderLabelFunction<EntityEdge>;
   curve?: 'curveStepBefore' | 'curveMonotoneX';
-  showArrowHeads?: boolean;
 };
 
 // @public

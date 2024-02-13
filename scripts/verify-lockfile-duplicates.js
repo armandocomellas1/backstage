@@ -95,11 +95,11 @@ async function main() {
 
     if (failed) {
       if (!fix) {
-        const command = `yarn${
+        const command = `yarn dedupe${
           lockFile.directoryRelativeToProjectRoot === '.'
             ? ''
             : ` --cwd ${lockFile.directoryRelativeToProjectRoot}`
-        } dedupe`;
+        }`;
         const padding = ' '.repeat(Math.max(0, 85 - 6 - command.length));
         console.error('');
         console.error(

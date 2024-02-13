@@ -71,9 +71,7 @@ export class SignalManager {
       id,
       user: identity?.identity.userEntityRef ?? 'user:default/guest',
       ws,
-      ownershipEntityRefs: identity?.identity.ownershipEntityRefs ?? [
-        'user:default/guest',
-      ],
+      ownershipEntityRefs: identity?.identity.ownershipEntityRefs ?? [],
       subscriptions: new Set<string>(),
     };
 
@@ -134,10 +132,6 @@ export class SignalManager {
 
     const { channel, recipients, message } = eventPayload;
     const jsonMessage = JSON.stringify({ channel, message });
-    let users: string[] = [];
-    if (recipients !== null) {
-      users = Array.isArray(recipients) ? recipients : [recipients];
-    }
 
     // Actual websocket message sending
     this.connections.forEach(conn => {
@@ -147,7 +141,9 @@ export class SignalManager {
       // Sending to all users can be done with null
       if (
         recipients !== null &&
-        !conn.ownershipEntityRefs.some((ref: string) => users.includes(ref))
+        !conn.ownershipEntityRefs.some((ref: string) =>
+          recipients.includes(ref),
+        )
       ) {
         return;
       }

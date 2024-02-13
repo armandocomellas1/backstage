@@ -55,17 +55,13 @@ import {
 
 import { createPublishAzureAction } from '@backstage/plugin-scaffolder-backend-module-azure';
 
-import { createPublishBitbucketAction } from '@backstage/plugin-scaffolder-backend-module-bitbucket';
-
 import {
+  createPublishBitbucketAction,
   createPublishBitbucketCloudAction,
-  createBitbucketPipelinesRunAction,
-} from '@backstage/plugin-scaffolder-backend-module-bitbucket-cloud';
-
-import {
   createPublishBitbucketServerAction,
   createPublishBitbucketServerPullRequestAction,
-} from '@backstage/plugin-scaffolder-backend-module-bitbucket-server';
+  createBitbucketPipelinesRunAction,
+} from '@backstage/plugin-scaffolder-backend-module-bitbucket';
 
 import {
   createPublishGerritAction,

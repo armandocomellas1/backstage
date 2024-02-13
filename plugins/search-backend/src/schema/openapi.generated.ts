@@ -22,7 +22,7 @@ import { createValidatedOpenApiRouter } from '@backstage/backend-openapi-utils';
 export const spec = {
   openapi: '3.0.3',
   info: {
-    title: 'search',
+    title: '@backstage/plugin-search-backend',
     version: '1',
     description:
       'The Backstage backend plugin that provides search functionality.',

@@ -21,5 +21,5 @@ export {
   createExternalRouteRef,
   type ExternalRouteRef,
 } from './ExternalRouteRef';
-export { useRouteRef } from './useRouteRef';
+export { useRouteRef, type RouteFunc } from './useRouteRef';
 export { useRouteRefParams } from './useRouteRefParams';

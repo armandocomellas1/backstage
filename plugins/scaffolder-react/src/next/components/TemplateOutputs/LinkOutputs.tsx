@@ -17,7 +17,7 @@ import { IconComponent, useApp, useRouteRef } from '@backstage/core-plugin-api';
 import { entityRouteRef } from '@backstage/plugin-catalog-react';
 import { Button, makeStyles } from '@material-ui/core';
 import React from 'react';
-import LinkIcon from '@material-ui/icons/Link';
+import WebIcon from '@material-ui/icons/Web';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Link } from '@backstage/core-components';
 import { ScaffolderTaskOutput } from '../../../api';
@@ -37,7 +37,7 @@ export const LinkOutputs = (props: { output: ScaffolderTaskOutput }) => {
   const entityRoute = useRouteRef(entityRouteRef);
 
   const iconResolver = (key?: string): IconComponent =>
-    app.getSystemIcon(key!) ?? LinkIcon;
+    app.getSystemIcon(key!) ?? WebIcon;
 
   return (
     <>

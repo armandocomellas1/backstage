@@ -67,11 +67,8 @@ export const EntityPicker = (props: EntityPickerProps) => {
   const catalogApi = useApi(catalogApiRef);
 
   const { value: entities, loading } = useAsync(async () => {
-    const fields = ['metadata.name', 'metadata.namespace', 'kind'];
     const { items } = await catalogApi.getEntities(
-      catalogFilter
-        ? { filter: catalogFilter, fields }
-        : { filter: undefined, fields },
+      catalogFilter ? { filter: catalogFilter } : undefined,
     );
     return items;
   });

@@ -19,7 +19,6 @@ import { MockPermissionApi } from '@backstage/test-utils';
 import { MockStorageApi } from '@backstage/test-utils';
 import { MockStorageBucket } from '@backstage/test-utils';
 import { RenderResult } from '@testing-library/react';
-import { RouteRef } from '@backstage/frontend-plugin-api';
 import { setupRequestMockHandlers } from '@backstage/test-utils';
 import { TestApiProvider } from '@backstage/test-utils';
 import { TestApiProviderProps } from '@backstage/test-utils';
@@ -74,10 +73,7 @@ export { MockStorageApi };
 export { MockStorageBucket };
 
 // @public
-export function renderInTestApp(
-  element: JSX.Element,
-  options?: TestAppOptions,
-): RenderResult;
+export function renderInTestApp(element: JSX.Element): RenderResult;
 
 export { setupRequestMockHandlers };
 
@@ -86,13 +82,6 @@ export { TestApiProvider };
 export { TestApiProviderProps };
 
 export { TestApiRegistry };
-
-// @public
-export type TestAppOptions = {
-  mountedRoutes?: {
-    [path: string]: RouteRef;
-  };
-};
 
 export { withLogCollector };
 ```

@@ -252,7 +252,6 @@ export class ScaffolderClient implements ScaffolderApi {
               : {},
           });
           eventSource.addEventListener('log', processEvent);
-          eventSource.addEventListener('recovered', processEvent);
           eventSource.addEventListener('cancelled', processEvent);
           eventSource.addEventListener('completion', (event: any) => {
             processEvent(event);

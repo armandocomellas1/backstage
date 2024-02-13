@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CompoundEntityRef, Entity } from '@backstage/catalog-model';
+import { Entity } from '@backstage/catalog-model';
 import { Location } from '@backstage/catalog-client';
 
 /**
@@ -48,10 +48,6 @@ export interface LocationService {
     id: string,
     options?: { authorizationToken?: string },
   ): Promise<void>;
-  getLocationByEntity(
-    entityRef: CompoundEntityRef | string,
-    options?: { authorizationToken?: string },
-  ): Promise<Location>;
 }
 
 /**
@@ -86,5 +82,4 @@ export interface LocationStore {
   listLocations(): Promise<Location[]>;
   getLocation(id: string): Promise<Location>;
   deleteLocation(id: string): Promise<void>;
-  getLocationByEntity(entityRef: CompoundEntityRef | string): Promise<Location>;
 }

@@ -63,7 +63,6 @@ describe('createRouter readonly disabled', () => {
       createLocation: jest.fn(),
       listLocations: jest.fn(),
       deleteLocation: jest.fn(),
-      getLocationByEntity: jest.fn(),
     };
     refreshService = { refresh: jest.fn() };
     orchestrator = { process: jest.fn() };
@@ -622,36 +621,6 @@ describe('createRouter readonly disabled', () => {
     });
   });
 
-  describe('GET /locations/by-entity/:kind/:namespace/:name', () => {
-    it('happy path: gets location by entity ref', async () => {
-      const location: Location = {
-        id: 'foo',
-        type: 'url',
-        target: 'example.com',
-      };
-      locationService.getLocationByEntity.mockResolvedValueOnce(location);
-
-      const response = await request(app)
-        .get('/locations/by-entity/c/ns/n')
-        .set('authorization', 'Bearer someauthtoken');
-
-      expect(locationService.getLocationByEntity).toHaveBeenCalledTimes(1);
-      expect(locationService.getLocationByEntity).toHaveBeenCalledWith(
-        { kind: 'c', namespace: 'ns', name: 'n' },
-        {
-          authorizationToken: 'someauthtoken',
-        },
-      );
-
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual({
-        id: 'foo',
-        target: 'example.com',
-        type: 'url',
-      });
-    });
-  });
-
   describe('POST /validate-entity', () => {
     describe('valid entity', () => {
       it('returns 200', async () => {
@@ -784,7 +753,6 @@ describe('createRouter readonly enabled', () => {
       createLocation: jest.fn(),
       listLocations: jest.fn(),
       deleteLocation: jest.fn(),
-      getLocationByEntity: jest.fn(),
     };
     const router = await createRouter({
       entitiesCatalog,
@@ -943,36 +911,6 @@ describe('createRouter readonly enabled', () => {
       expect(response.status).toEqual(403);
     });
   });
-
-  describe('GET /locations/by-entity/:kind/:namespace/:name', () => {
-    it('happy path: gets location by entity ref', async () => {
-      const location: Location = {
-        id: 'foo',
-        type: 'url',
-        target: 'example.com',
-      };
-      locationService.getLocationByEntity.mockResolvedValueOnce(location);
-
-      const response = await request(app)
-        .get('/locations/by-entity/c/ns/n')
-        .set('authorization', 'Bearer someauthtoken');
-
-      expect(locationService.getLocationByEntity).toHaveBeenCalledTimes(1);
-      expect(locationService.getLocationByEntity).toHaveBeenCalledWith(
-        { kind: 'c', namespace: 'ns', name: 'n' },
-        {
-          authorizationToken: 'someauthtoken',
-        },
-      );
-
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual({
-        id: 'foo',
-        target: 'example.com',
-        type: 'url',
-      });
-    });
-  });
 });
 
 describe('NextRouter permissioning', () => {
@@ -1006,7 +944,6 @@ describe('NextRouter permissioning', () => {
       createLocation: jest.fn(),
       listLocations: jest.fn(),
       deleteLocation: jest.fn(),
-      getLocationByEntity: jest.fn(),
     };
     refreshService = { refresh: jest.fn() };
     const router = await createRouter({

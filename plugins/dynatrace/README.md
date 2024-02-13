@@ -28,7 +28,7 @@ The Dynatrace plugin will require the following information, to be used in the c
 
 ```
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage/plugin-dynatrace
+yarn add --cwd packages/app @backstage/plugin-dynatrace
 ```
 
 2. We created in our catalog the interface for using the integration with Dynatrace.

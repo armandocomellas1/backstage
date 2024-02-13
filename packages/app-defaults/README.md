@@ -8,7 +8,7 @@ Install the package via Yarn:
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage/app-defaults
+yarn add --cwd packages/app @backstage/app-defaults
 ```
 
 ## Documentation

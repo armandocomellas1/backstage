@@ -6,5 +6,5 @@ This package provides frontend utilities for TechDocs and Addons.
 
 ```sh
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage/plugin-techdocs-react
+yarn add --cwd packages/app @backstage/plugin-techdocs-react
 ```

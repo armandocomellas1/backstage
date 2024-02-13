@@ -16,10 +16,15 @@
 import { ConfigReader } from '@backstage/config';
 import {
   ANNOTATION_KUBERNETES_AWS_ASSUME_ROLE,
-  ANNOTATION_KUBERNETES_AWS_CLUSTER_ID,
   ANNOTATION_KUBERNETES_AWS_EXTERNAL_ID,
 } from '@backstage/plugin-kubernetes-common';
 import { AwsIamStrategy } from './AwsIamStrategy';
+
+let presign = jest.fn(async () => ({
+  hostname: 'https://example.com',
+  query: {},
+  path: '/asdf',
+}));
 
 const credsManager = {
   getCredentialProvider: async () => ({
@@ -35,16 +40,12 @@ jest.mock('@backstage/integration-aws-node', () => ({
   },
 }));
 
-const signer = {
-  presign: jest.fn().mockResolvedValue({
-    hostname: 'https://example.com',
-    query: {},
-    path: '/asdf',
-  }),
-};
+const config = new ConfigReader({});
 
 jest.mock('@aws-sdk/signature-v4', () => ({
-  SignatureV4: jest.fn().mockImplementation(() => signer),
+  SignatureV4: jest.fn().mockImplementation(() => ({
+    presign,
+  })),
 }));
 
 const fromTemporaryCredentials = jest.fn();
@@ -54,10 +55,9 @@ jest.mock('@aws-sdk/credential-providers', () => ({
   },
 }));
 
-describe('AwsIamStrategy#getCredential', () => {
-  const config = new ConfigReader({});
-
-  it('returns a presigned url', async () => {
+describe('AwsIamStrategy tests', () => {
+  beforeEach(() => {});
+  it('returns a signed url for AWS credentials without assume role', async () => {
     const strategy = new AwsIamStrategy({ config });
 
     const credential = await strategy.getCredential({
@@ -65,43 +65,13 @@ describe('AwsIamStrategy#getCredential', () => {
       url: '',
       authMetadata: {},
     });
-
     expect(credential).toEqual({
       type: 'bearer token',
       token: 'k8s-aws-v1.aHR0cHM6Ly9odHRwczovL2V4YW1wbGUuY29tL2FzZGY_',
     });
-    expect(signer.presign).toHaveBeenCalledWith(
-      expect.objectContaining({
-        headers: expect.objectContaining({ 'x-k8s-aws-id': 'test-cluster' }),
-      }),
-      expect.anything(),
-    );
   });
 
-  it('returns a presigned url for specified cluster ID', async () => {
-    const strategy = new AwsIamStrategy({ config });
-
-    const credential = await strategy.getCredential({
-      name: 'cluster-name',
-      url: '',
-      authMetadata: {
-        [ANNOTATION_KUBERNETES_AWS_CLUSTER_ID]: 'other-name',
-      },
-    });
-
-    expect(credential).toEqual({
-      type: 'bearer token',
-      token: 'k8s-aws-v1.aHR0cHM6Ly9odHRwczovL2V4YW1wbGUuY29tL2FzZGY_',
-    });
-    expect(signer.presign).toHaveBeenCalledWith(
-      expect.objectContaining({
-        headers: expect.objectContaining({ 'x-k8s-aws-id': 'other-name' }),
-      }),
-      expect.anything(),
-    );
-  });
-
-  it('returns a presigned url for AWS credentials with assumed role', async () => {
+  it('returns a signed url for AWS credentials with assume role', async () => {
     const strategy = new AwsIamStrategy({ config });
 
     const credential = await strategy.getCredential({
@@ -130,7 +100,7 @@ describe('AwsIamStrategy#getCredential', () => {
     });
   });
 
-  it('returns a presigned url for AWS credentials and passes the external id', async () => {
+  it('returns a signed url for AWS credentials and passes the external id', async () => {
     const strategy = new AwsIamStrategy({ config });
 
     const credential = await strategy.getCredential({
@@ -159,17 +129,21 @@ describe('AwsIamStrategy#getCredential', () => {
     });
   });
 
-  it('fails on signer error', () => {
-    signer.presign.mockRejectedValue(new Error('no way'));
-
-    const strategy = new AwsIamStrategy({ config });
-
-    return expect(
-      strategy.getCredential({
-        name: 'test-cluster',
-        url: '',
-        authMetadata: {},
-      }),
-    ).rejects.toThrow('no way');
+  describe('When the credentials is failing', () => {
+    beforeEach(() => {
+      presign = jest.fn(async () => {
+        throw new Error('no way');
+      });
+    });
+    it('throws the right error', async () => {
+      const strategy = new AwsIamStrategy({ config });
+      await expect(
+        strategy.getCredential({
+          name: 'test-cluster',
+          url: '',
+          authMetadata: {},
+        }),
+      ).rejects.toThrow('no way');
+    });
   });
 });

@@ -265,7 +265,6 @@ export interface DependencyGraphProps<NodeData, EdgeData>
   rankMargin?: number;
   renderLabel?: DependencyGraphTypes.RenderLabelFunction<EdgeData>;
   renderNode?: DependencyGraphTypes.RenderNodeFunction<NodeData>;
-  showArrowHeads?: boolean;
   zoom?: 'enabled' | 'disabled' | 'enable-on-click';
 }
 
@@ -593,6 +592,11 @@ export type InfoCardClassKey =
 
 // @public (undocumented)
 export type InfoCardVariants = 'flex' | 'fullHeight' | 'gridItem';
+
+// Warning: (ae-forgotten-export) The symbol "IntroCardProps" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function IntroCard(props: IntroCardProps): React_2.JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "ItemCardProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "ItemCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -948,6 +952,19 @@ export interface SidebarGroupProps extends BottomNavigationActionProps {
   priority?: number;
   to?: string;
 }
+
+// Warning: (ae-missing-release-tag) "SidebarIntro" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export function SidebarIntro(_props: {}): React_2.JSX.Element | null;
+
+// @public (undocumented)
+export type SidebarIntroClassKey =
+  | 'introCard'
+  | 'introDismiss'
+  | 'introDismissLink'
+  | 'introDismissText'
+  | 'introDismissIcon';
 
 // Warning: (ae-forgotten-export) The symbol "SidebarItemProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "SidebarItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)

@@ -18,8 +18,7 @@ The `auto-instrumentations-node` will automatically create spans for code called
 ```bash
 yarn --cwd packages/backend add @opentelemetry/sdk-node \
     @opentelemetry/auto-instrumentations-node \
-    @opentelemetry/sdk-metrics \
-    @opentelemetry/sdk-trace-node
+    @opentelemetry/sdk-metrics
 ```
 
 ## Configure

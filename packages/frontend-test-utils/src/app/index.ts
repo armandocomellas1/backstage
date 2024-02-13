@@ -19,4 +19,4 @@ export {
   type ExtensionTester,
 } from './createExtensionTester';
 
-export { renderInTestApp, type TestAppOptions } from './renderInTestApp';
+export { renderInTestApp } from './renderInTestApp';

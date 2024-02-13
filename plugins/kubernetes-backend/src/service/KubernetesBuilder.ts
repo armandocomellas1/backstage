@@ -243,7 +243,6 @@ export class KubernetesBuilder {
       config,
       this.env.catalogApi,
       new DispatchStrategy({ authStrategyMap: this.getAuthStrategyMap() }),
-      this.env.logger,
       refreshInterval,
     );
 

@@ -1,6 +1,6 @@
 {
   "name": "example-app",
-  "version": "0.2.92-next.2",
+  "version": "0.2.91",
   "private": true,
   "backstage": {
     "role": "frontend"
@@ -59,7 +59,6 @@
     "@backstage/plugin-newrelic": "workspace:^",
     "@backstage/plugin-newrelic-dashboard": "workspace:^",
     "@backstage/plugin-nomad": "workspace:^",
-    "@backstage/plugin-notifications": "workspace:^",
     "@backstage/plugin-octopus-deploy": "workspace:^",
     "@backstage/plugin-org": "workspace:^",
     "@backstage/plugin-pagerduty": "workspace:^",
@@ -90,7 +89,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
     "@octokit/rest": "^19.0.3",
-    "@oriflame/backstage-plugin-score-card": "^0.8.0",
+    "@oriflame/backstage-plugin-score-card": "^0.7.0",
     "@roadiehq/backstage-plugin-buildkite": "^2.0.8",
     "@roadiehq/backstage-plugin-github-insights": "^2.0.5",
     "@roadiehq/backstage-plugin-github-pull-requests": "^2.2.7",
@@ -104,7 +103,7 @@
     "react-use": "^17.2.4",
     "vite": "^4.4.9",
     "vite-plugin-html": "^3.2.0",
-    "vite-plugin-node-polyfills": "^0.19.0",
+    "vite-plugin-node-polyfills": "^0.17.0",
     "zen-observable": "^0.10.0"
   },
   "devDependencies": {

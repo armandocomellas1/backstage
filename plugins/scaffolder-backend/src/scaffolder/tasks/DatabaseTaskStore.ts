@@ -29,19 +29,14 @@ import {
   TaskStoreCreateTaskOptions,
   TaskStoreCreateTaskResult,
   TaskStoreShutDownTaskOptions,
-  TaskStoreRecoverTaskOptions,
 } from './types';
 import {
   SerializedTaskEvent,
   SerializedTask,
   TaskStatus,
   TaskEventType,
-  TaskSecrets,
 } from '@backstage/plugin-scaffolder-node';
-import { DateTime, Duration } from 'luxon';
-import { TaskRecovery, TaskSpec } from '@backstage/plugin-scaffolder-common';
-import { trimEventsTillLastRecovery } from './taskRecoveryHelper';
-import { intervalFromNowTill } from './dbUtil';
+import { DateTime } from 'luxon';
 
 const migrationsDir = resolvePackagePath(
   '@backstage/plugin-scaffolder-backend',
@@ -117,30 +112,6 @@ export class DatabaseTaskStore implements TaskStore {
     await this.runMigrations(database, client);
 
     return new DatabaseTaskStore(client);
-  }
-
-  private isRecoverableTask(spec: TaskSpec): boolean {
-    return ['startOver'].includes(
-      spec.EXPERIMENTAL_recovery?.EXPERIMENTAL_strategy ?? 'none',
-    );
-  }
-
-  private parseSpec({ spec, id }: { spec: string; id: string }): TaskSpec {
-    try {
-      return JSON.parse(spec);
-    } catch (error) {
-      throw new Error(`Failed to parse spec of task '${id}', ${error}`);
-    }
-  }
-
-  private parseTaskSecrets(taskRow: RawDbTaskRow): TaskSecrets | undefined {
-    try {
-      return taskRow.secrets ? JSON.parse(taskRow.secrets) : undefined;
-    } catch (error) {
-      throw new Error(
-        `Failed to parse secrets of task '${taskRow.id}', ${error}`,
-      );
-    }
   }
 
   private static async getClient(
@@ -252,31 +223,34 @@ export class DatabaseTaskStore implements TaskStore {
         return undefined;
       }
 
-      const spec = this.parseSpec(task);
-
       const updateCount = await tx<RawDbTaskRow>('tasks')
         .where({ id: task.id, status: 'open' })
         .update({
           status: 'processing',
           last_heartbeat_at: this.db.fn.now(),
-          // remove the secrets for non-recoverable tasks when moving to processing state.
-          secrets: this.isRecoverableTask(spec) ? task.secrets : null,
+          // remove the secrets when moving to processing state.
+          secrets: null,
         });
 
       if (updateCount < 1) {
         return undefined;
       }
 
-      const secrets = this.parseTaskSecrets(task);
-      return {
-        id: task.id,
-        spec,
-        status: 'processing',
-        lastHeartbeatAt: task.last_heartbeat_at,
-        createdAt: task.created_at,
-        createdBy: task.created_by ?? undefined,
-        secrets,
-      };
+      try {
+        const spec = JSON.parse(task.spec);
+        const secrets = task.secrets ? JSON.parse(task.secrets) : undefined;
+        return {
+          id: task.id,
+          spec,
+          status: 'processing',
+          lastHeartbeatAt: task.last_heartbeat_at,
+          createdAt: task.created_at,
+          createdBy: task.created_by ?? undefined,
+          secrets,
+        };
+      } catch (error) {
+        throw new Error(`Failed to parse spec of task '${task.id}', ${error}`);
+      }
     });
   }
 
@@ -292,15 +266,25 @@ export class DatabaseTaskStore implements TaskStore {
   }
 
   async listStaleTasks(options: { timeoutS: number }): Promise<{
-    tasks: { taskId: string; recovery?: TaskRecovery }[];
+    tasks: { taskId: string }[];
   }> {
     const { timeoutS } = options;
-    const heartbeatInterval = intervalFromNowTill(timeoutS, this.db);
+    let heartbeatInterval = this.db.raw(`? - interval '${timeoutS} seconds'`, [
+      this.db.fn.now(),
+    ]);
+    if (this.db.client.config.client.includes('mysql')) {
+      heartbeatInterval = this.db.raw(
+        `date_sub(now(), interval ${timeoutS} second)`,
+      );
+    } else if (this.db.client.config.client.includes('sqlite3')) {
+      heartbeatInterval = this.db.raw(`datetime('now', ?)`, [
+        `-${timeoutS} seconds`,
+      ]);
+    }
     const rawRows = await this.db<RawDbTaskRow>('tasks')
       .where('status', 'processing')
       .andWhere('last_heartbeat_at', '<=', heartbeatInterval);
     const tasks = rawRows.map(row => ({
-      recovery: (JSON.parse(row.spec) as TaskSpec).EXPERIMENTAL_recovery,
       taskId: row.id,
     }));
     return { tasks };
@@ -313,7 +297,7 @@ export class DatabaseTaskStore implements TaskStore {
   }): Promise<void> {
     const { taskId, status, eventBody } = options;
 
-    let oldStatus: TaskStatus;
+    let oldStatus: string;
     if (['failed', 'completed', 'cancelled'].includes(status)) {
       oldStatus = 'processing';
     } else {
@@ -338,7 +322,6 @@ export class DatabaseTaskStore implements TaskStore {
           .where(criteria)
           .update({
             status,
-            secrets: null,
           });
 
         if (updateCount !== 1) {
@@ -426,8 +409,7 @@ export class DatabaseTaskStore implements TaskStore {
         );
       }
     });
-
-    return trimEventsTillLastRecovery(events);
+    return { events };
   }
 
   async shutdownTask(options: TaskStoreShutDownTaskOptions): Promise<void> {
@@ -479,43 +461,5 @@ export class DatabaseTaskStore implements TaskStore {
       event_type: 'cancelled',
       body: serializedBody,
     });
-  }
-
-  async recoverTasks(
-    options: TaskStoreRecoverTaskOptions,
-  ): Promise<{ ids: string[] }> {
-    const taskIdsToRecover: string[] = [];
-    const timeoutS = Duration.fromObject(options.timeout).as('seconds');
-
-    await this.db.transaction(async tx => {
-      const heartbeatInterval = intervalFromNowTill(timeoutS, this.db);
-
-      const result = await tx<RawDbTaskRow>('tasks')
-        .where('status', 'processing')
-        .andWhere('last_heartbeat_at', '<=', heartbeatInterval)
-        .update(
-          {
-            status: 'open',
-            last_heartbeat_at: this.db.fn.now(),
-          },
-          ['id', 'spec'],
-        );
-
-      taskIdsToRecover.push(...result.map(i => i.id));
-
-      for (const { id, spec } of result) {
-        const taskSpec = JSON.parse(spec as string) as TaskSpec;
-        await this.db<RawDbTaskEventRow>('task_events').insert({
-          task_id: id,
-          event_type: 'recovered',
-          body: JSON.stringify({
-            recoverStrategy:
-              taskSpec.EXPERIMENTAL_recovery?.EXPERIMENTAL_strategy ?? 'none',
-          }),
-        });
-      }
-    });
-
-    return { ids: taskIdsToRecover };
   }
 }

@@ -40,10 +40,6 @@ export const ANNOTATION_KUBERNETES_AWS_ASSUME_ROLE =
   'kubernetes.io/aws-assume-role';
 
 // @public
-export const ANNOTATION_KUBERNETES_AWS_CLUSTER_ID =
-  'kubernetes.io/x-k8s-aws-id';
-
-// @public
 export const ANNOTATION_KUBERNETES_AWS_EXTERNAL_ID =
   'kubernetes.io/aws-external-id';
 

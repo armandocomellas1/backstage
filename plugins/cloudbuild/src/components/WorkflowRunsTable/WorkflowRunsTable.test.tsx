@@ -35,7 +35,7 @@ describe('<WorkflowRunsTableView />', () => {
         substitutions: {
           COMMIT_SHA: 'e3adasd2e3adasd2e3adasd2',
           SHORT_SHA: 'f12j1231',
-          REF_NAME: 'main',
+          BRANCH_NAME: 'main',
           REPO_NAME: 'backstage',
           REVISION_ID: 'g123123',
         },

@@ -21,4 +21,3 @@
  */
 
 export * from './actions';
-export { cookiecutterModule as default } from './module';

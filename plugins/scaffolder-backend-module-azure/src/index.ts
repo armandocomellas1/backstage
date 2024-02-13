@@ -21,4 +21,3 @@
  */
 
 export * from './actions';
-export { azureModule as default } from './module';

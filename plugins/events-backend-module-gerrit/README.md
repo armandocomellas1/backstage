@@ -27,7 +27,7 @@ Install this module:
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/backend add @backstage/plugin-events-backend-module-gerrit
+yarn add --cwd packages/backend @backstage/plugin-events-backend-module-gerrit
 ```
 
 ### Add to backend

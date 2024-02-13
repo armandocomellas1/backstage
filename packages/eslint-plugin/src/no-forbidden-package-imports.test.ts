@@ -25,11 +25,6 @@ const ERR = (name: string, path: string) => ({
   message: `${name} does not export ${path}`,
 });
 
-// cwd must be restored
-const origDir = process.cwd();
-afterAll(() => {
-  process.chdir(origDir);
-});
 process.chdir(FIXTURE);
 
 const ruleTester = new RuleTester({

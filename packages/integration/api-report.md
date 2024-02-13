@@ -4,7 +4,6 @@
 
 ```ts
 import { Config } from '@backstage/config';
-import { ConsumedResponse } from '@backstage/errors';
 import { RestEndpointMethodTypes } from '@octokit/rest';
 
 // @public
@@ -568,8 +567,6 @@ export class GithubIntegration implements ScmIntegration {
   // (undocumented)
   static factory: ScmIntegrationsFactory<GithubIntegration>;
   // (undocumented)
-  parseRateLimitInfo(response: ConsumedResponse): RateLimitInfo;
-  // (undocumented)
   resolveEditUrl(url: string): string;
   // (undocumented)
   resolveUrl(options: {
@@ -696,12 +693,6 @@ export type PersonalAccessTokenCredential = AzureCredentialBase & {
   kind: 'PersonalAccessToken';
   personalAccessToken: string;
 };
-
-// @public
-export interface RateLimitInfo {
-  // (undocumented)
-  isRateLimited: boolean;
-}
 
 // @public
 export function readAwsS3IntegrationConfig(

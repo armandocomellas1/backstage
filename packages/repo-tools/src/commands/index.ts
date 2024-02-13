@@ -18,59 +18,12 @@ import { assertError } from '@backstage/errors';
 import { Command } from 'commander';
 import { exitWithError } from '../lib/errors';
 
-function registerPackageCommand(program: Command) {
+function registerSchemaCommand(program: Command) {
   const command = program
-    .command('package [command]')
-    .description('Various tools for working with specific packages.');
-
-  const schemaCommand = command
-    .command('schema [command]')
-    .description(
-      "Various tools for working with specific packages' API schema",
-    );
-
-  const openApiCommand = schemaCommand
-    .command('openapi [command]')
-    .description('Tooling for OpenAPI schema');
-
-  openApiCommand
-    .command('init')
-    .description(
-      'Initialize any required files to use the OpenAPI tooling for this package.',
-    )
-    .action(
-      lazy(() =>
-        import('./package/schema/openapi/init').then(m => m.singleCommand),
-      ),
-    );
-
-  openApiCommand
-    .command('generate')
-    .option(
-      '--client-package [package]',
-      'Top-level path to where the client should be generated, ie packages/catalog-client.',
-    )
-    .option('--server')
-    .description(
-      'Command to generate a client and/or a server stub from an OpenAPI spec.',
-    )
-    .action(
-      lazy(() =>
-        import('./package/schema/openapi/generate').then(m => m.command),
-      ),
-    );
-}
-
-function registerRepoCommand(program: Command) {
-  const command = program
-    .command('repo [command]')
-    .description('Tools for working across your entire repository.');
-
-  const schemaCommand = command
     .command('schema [command]')
     .description('Various tools for working with API schema');
 
-  const openApiCommand = schemaCommand
+  const openApiCommand = command
     .command('openapi [command]')
     .description('Tooling for OpenApi schema');
 
@@ -80,9 +33,16 @@ function registerRepoCommand(program: Command) {
       'Verify that all OpenAPI schemas are valid and have a matching `schemas/openapi.generated.ts` file.',
     )
     .action(
-      lazy(() =>
-        import('./repo/schema/openapi/verify').then(m => m.bulkCommand),
-      ),
+      lazy(() => import('./openapi/schema/verify').then(m => m.bulkCommand)),
+    );
+
+  openApiCommand
+    .command('generate [paths...]')
+    .description(
+      'Generates a Typescript file from an OpenAPI yaml spec. For use with the `@backstage/backend-openapi-utils` ApiRouter type.',
+    )
+    .action(
+      lazy(() => import('./openapi/schema/generate').then(m => m.bulkCommand)),
     );
 
   openApiCommand
@@ -92,16 +52,27 @@ function registerRepoCommand(program: Command) {
       '--strict',
       'Fail on any linting severity messages, not just errors.',
     )
-    .action(
-      lazy(() => import('./repo/schema/openapi/lint').then(m => m.bulkCommand)),
-    );
+    .action(lazy(() => import('./openapi/lint').then(m => m.bulkCommand)));
 
   openApiCommand
     .command('test [paths...]')
     .description('Test OpenAPI schemas against written tests')
     .option('--update', 'Update the spec on failure.')
+    .action(lazy(() => import('./openapi/test').then(m => m.bulkCommand)));
+
+  openApiCommand
+    .command('init <paths...>')
+    .description('Creates any config needed for the test command.')
+    .action(lazy(() => import('./openapi/test/init').then(m => m.default)));
+
+  openApiCommand
+    .command('generate-client')
+    .requiredOption('--input-spec <file>')
+    .requiredOption('--output-directory <directory>')
     .action(
-      lazy(() => import('./repo/schema/openapi/test').then(m => m.bulkCommand)),
+      lazy(() =>
+        import('./openapi/client/generate').then(m => m.singleCommand),
+      ),
     );
 }
 
@@ -168,8 +139,8 @@ export function registerCommands(program: Command) {
         ),
       ),
     );
-  registerPackageCommand(program);
-  registerRepoCommand(program);
+
+  registerSchemaCommand(program);
 }
 
 // Wraps an action function so that it always exits and handles errors

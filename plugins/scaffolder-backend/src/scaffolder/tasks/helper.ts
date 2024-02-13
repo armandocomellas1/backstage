@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-import { Config, readDurationFromConfig } from '@backstage/config';
-import { HumanDuration } from '@backstage/types';
-
 import { isArray } from 'lodash';
 import { Schema } from 'jsonschema';
 
@@ -56,14 +53,3 @@ export function generateExampleOutput(schema: Schema): unknown {
   }
   return '<unknown>';
 }
-
-export const readDuration = (
-  config: Config | undefined,
-  key: string,
-  defaultValue: HumanDuration,
-) => {
-  if (config?.has(key)) {
-    return readDurationFromConfig(config, { key });
-  }
-  return defaultValue;
-};

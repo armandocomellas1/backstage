@@ -18,7 +18,7 @@ import { createApiRef } from '@backstage/core-plugin-api';
 import {
   AzureSiteListRequest,
   AzureSiteListResponse,
-  AzureSiteBackendRequest,
+  AzureSiteStartStopRequest,
 } from '@backstage/plugin-azure-sites-common';
 
 /** @public */
@@ -29,6 +29,6 @@ export const azureSiteApiRef = createApiRef<AzureSitesApi>({
 /** @public */
 export type AzureSitesApi = {
   list: (request: AzureSiteListRequest) => Promise<AzureSiteListResponse>;
-  start: (request: AzureSiteBackendRequest) => Promise<void>;
-  stop: (request: AzureSiteBackendRequest) => Promise<void>;
+  start: (request: AzureSiteStartStopRequest) => Promise<void>;
+  stop: (request: AzureSiteStartStopRequest) => Promise<void>;
 };

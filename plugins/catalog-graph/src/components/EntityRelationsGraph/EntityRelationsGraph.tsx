@@ -84,7 +84,6 @@ export type EntityRelationsGraphProps = {
   renderNode?: DependencyGraphTypes.RenderNodeFunction<EntityNode>;
   renderLabel?: DependencyGraphTypes.RenderLabelFunction<EntityEdge>;
   curve?: 'curveStepBefore' | 'curveMonotoneX';
-  showArrowHeads?: boolean;
 };
 
 /**
@@ -108,7 +107,6 @@ export const EntityRelationsGraph = (props: EntityRelationsGraphProps) => {
     renderNode,
     renderLabel,
     curve,
-    showArrowHeads,
   } = props;
 
   const theme = useTheme();
@@ -156,7 +154,6 @@ export const EntityRelationsGraph = (props: EntityRelationsGraphProps) => {
           labelOffset={theme.spacing(1)}
           zoom={zoom}
           curve={curve}
-          showArrowHeads={showArrowHeads}
         />
       )}
     </div>

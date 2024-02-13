@@ -37,6 +37,5 @@ export type {
   ScmIntegration,
   ScmIntegrationsFactory,
   ScmIntegrationsGroup,
-  RateLimitInfo,
 } from './types';
 export type { ScmIntegrationRegistry } from './registry';

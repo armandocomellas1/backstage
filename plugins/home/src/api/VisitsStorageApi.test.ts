@@ -250,7 +250,7 @@ describe('VisitsStorageApi.create', () => {
       ]);
     });
 
-    it('filters by timestamp with value >', async () => {
+    it('filters by timestamp with >', async () => {
       const visits = await api.list({
         filterBy: [{ field: 'timestamp', operator: '>', value: baseDate }],
       });

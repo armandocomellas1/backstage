@@ -40,7 +40,6 @@ describe('<CatalogGraphCard/>', () => {
   const catalog = {
     getEntities: jest.fn(),
     getEntityByRef: jest.fn(),
-    getEntitiesByRefs: jest.fn(),
     removeEntityByUid: jest.fn(),
     getLocationById: jest.fn(),
     getLocationByRef: jest.fn(),
@@ -76,13 +75,9 @@ describe('<CatalogGraphCard/>', () => {
   });
 
   test('renders without exploding', async () => {
-    catalog.getEntitiesByRefs.mockImplementation(async _ => ({
-      items: [
-        {
-          ...entity,
-          relations: [],
-        },
-      ],
+    catalog.getEntityByRef.mockImplementation(async _ => ({
+      ...entity,
+      relations: [],
     }));
 
     await renderInTestApp(wrapper, {
@@ -94,20 +89,13 @@ describe('<CatalogGraphCard/>', () => {
 
     expect(await screen.findByText('b:d/c')).toBeInTheDocument();
     expect(await screen.findAllByTestId('node')).toHaveLength(1);
-    expect(catalog.getEntitiesByRefs).toHaveBeenCalledTimes(1);
-    expect(catalog.getEntitiesByRefs).toHaveBeenCalledWith(
-      expect.objectContaining({ entityRefs: ['b:d/c'] }),
-    );
+    expect(catalog.getEntityByRef).toHaveBeenCalledTimes(1);
   });
 
   test('renders with custom title', async () => {
-    catalog.getEntitiesByRefs.mockImplementation(async _ => ({
-      items: [
-        {
-          ...entity,
-          relations: [],
-        },
-      ],
+    catalog.getEntityByRef.mockImplementation(async _ => ({
+      ...entity,
+      relations: [],
     }));
 
     await renderInTestApp(
@@ -128,13 +116,9 @@ describe('<CatalogGraphCard/>', () => {
   });
 
   test('renders link to standalone viewer', async () => {
-    catalog.getEntitiesByRefs.mockImplementation(async _ => ({
-      items: [
-        {
-          ...entity,
-          relations: [],
-        },
-      ],
+    catalog.getEntityByRef.mockImplementation(async _ => ({
+      ...entity,
+      relations: [],
     }));
 
     await renderInTestApp(wrapper, {
@@ -154,15 +138,6 @@ describe('<CatalogGraphCard/>', () => {
   });
 
   test('renders link to standalone viewer with custom config', async () => {
-    catalog.getEntitiesByRefs.mockImplementation(async _ => ({
-      items: [
-        {
-          ...entity,
-          relations: [],
-        },
-      ],
-    }));
-
     await renderInTestApp(
       <ApiProvider apis={apis}>
         <EntityProvider entity={entity}>
@@ -187,13 +162,9 @@ describe('<CatalogGraphCard/>', () => {
   });
 
   test('captures analytics event on click', async () => {
-    catalog.getEntitiesByRefs.mockImplementation(async _ => ({
-      items: [
-        {
-          ...entity,
-          relations: [],
-        },
-      ],
+    catalog.getEntityByRef.mockImplementation(async _ => ({
+      ...entity,
+      relations: [],
     }));
 
     const analyticsSpy = new MockAnalyticsApi();

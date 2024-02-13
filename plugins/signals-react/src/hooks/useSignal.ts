@@ -16,7 +16,7 @@
 import { signalApiRef } from '../api';
 import { useApiHolder } from '@backstage/core-plugin-api';
 import { JsonObject } from '@backstage/types';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 /** @public */
 export const useSignal = (channel: string) => {
@@ -40,8 +40,5 @@ export const useSignal = (channel: string) => {
     };
   }, [signals, channel]);
 
-  // Can be used to fallback (for example to long polling) if signals are not available in the system
-  const isSignalsAvailable = useMemo(() => !signals, [signals]);
-
-  return { lastSignal, isSignalsAvailable };
+  return { lastSignal };
 };

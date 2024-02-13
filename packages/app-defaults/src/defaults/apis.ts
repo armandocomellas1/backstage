@@ -34,7 +34,6 @@ import {
   AtlassianAuth,
   createFetchApi,
   FetchMiddlewares,
-  VMwareCloudAuth,
 } from '@backstage/core-app-api';
 
 import {
@@ -57,7 +56,6 @@ import {
   bitbucketAuthApiRef,
   bitbucketServerAuthApiRef,
   atlassianAuthApiRef,
-  vmwareCloudAuthApiRef,
 } from '@backstage/core-plugin-api';
 import {
   permissionApiRef,
@@ -226,7 +224,7 @@ export const apis = [
         configApi,
         discoveryApi,
         oauthRequestApi,
-        defaultScopes: ['account'],
+        defaultScopes: ['team'],
         environment: configApi.getOptionalString('auth.environment'),
       }),
   }),
@@ -254,22 +252,6 @@ export const apis = [
     },
     factory: ({ discoveryApi, oauthRequestApi, configApi }) => {
       return AtlassianAuth.create({
-        configApi,
-        discoveryApi,
-        oauthRequestApi,
-        environment: configApi.getOptionalString('auth.environment'),
-      });
-    },
-  }),
-  createApiFactory({
-    api: vmwareCloudAuthApiRef,
-    deps: {
-      discoveryApi: discoveryApiRef,
-      oauthRequestApi: oauthRequestApiRef,
-      configApi: configApiRef,
-    },
-    factory: ({ discoveryApi, oauthRequestApi, configApi }) => {
-      return VMwareCloudAuth.create({
         configApi,
         discoveryApi,
         oauthRequestApi,

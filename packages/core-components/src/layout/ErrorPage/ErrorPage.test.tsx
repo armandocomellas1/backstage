@@ -99,15 +99,4 @@ describe('<ErrorPage/>', () => {
       'https://error-page-test-support-url.com',
     );
   });
-
-  it('should render show details if stack is provided', async () => {
-    const { getByText } = await renderInTestApp(
-      <ErrorPage
-        status="500"
-        statusMessage="INTERNAL ERROR"
-        stack="this is my stack trace!"
-      />,
-    );
-    expect(getByText(/Show more details/i)).toBeInTheDocument();
-  });
 });

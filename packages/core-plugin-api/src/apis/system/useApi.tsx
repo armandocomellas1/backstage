@@ -17,7 +17,6 @@
 import React, { PropsWithChildren } from 'react';
 import { ApiRef, ApiHolder, TypesToApiRefs } from './types';
 import { useVersionedContext } from '@backstage/version-bridge';
-import { NotImplementedError } from '@backstage/errors';
 
 /**
  * React hook for retrieving {@link ApiHolder}, an API catalog.
@@ -27,12 +26,12 @@ import { NotImplementedError } from '@backstage/errors';
 export function useApiHolder(): ApiHolder {
   const versionedHolder = useVersionedContext<{ 1: ApiHolder }>('api-context');
   if (!versionedHolder) {
-    throw new NotImplementedError('API context is not available');
+    throw new Error('API context is not available');
   }
 
   const apiHolder = versionedHolder.atVersion(1);
   if (!apiHolder) {
-    throw new NotImplementedError('ApiContext v1 not available');
+    throw new Error('ApiContext v1 not available');
   }
   return apiHolder;
 }
@@ -48,7 +47,7 @@ export function useApi<T>(apiRef: ApiRef<T>): T {
 
   const api = apiHolder.get(apiRef);
   if (!api) {
-    throw new NotImplementedError(`No implementation available for ${apiRef}`);
+    throw new Error(`No implementation available for ${apiRef}`);
   }
   return api;
 }
@@ -74,9 +73,7 @@ export function withApis<T extends {}>(apis: TypesToApiRefs<T>) {
 
           const api = apiHolder.get(ref);
           if (!api) {
-            throw new NotImplementedError(
-              `No implementation available for ${ref}`,
-            );
+            throw new Error(`No implementation available for ${ref}`);
           }
           impls[key] = api;
         }

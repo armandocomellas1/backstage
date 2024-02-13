@@ -33,11 +33,7 @@ export function createFetchPlainFileAction(options: {
 }) {
   const { reader, integrations } = options;
 
-  return createTemplateAction<{
-    url: string;
-    targetPath: string;
-    token?: string;
-  }>({
+  return createTemplateAction<{ url: string; targetPath: string }>({
     id: 'fetch:plain:file',
     description: 'Downloads single file and places it in the workspace.',
     examples,
@@ -56,12 +52,6 @@ export function createFetchPlainFileAction(options: {
             title: 'Target Path',
             description:
               'Target path within the working directory to download the file as.',
-            type: 'string',
-          },
-          token: {
-            title: 'Token',
-            description:
-              'An optional token to use for authentication when reading the resources.',
             type: 'string',
           },
         },
@@ -83,7 +73,6 @@ export function createFetchPlainFileAction(options: {
         baseUrl: ctx.templateInfo?.baseUrl,
         fetchUrl: ctx.input.url,
         outputPath,
-        token: ctx.input.token,
       });
     },
   });

@@ -26,7 +26,6 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { CatalogGraphPage } from './CatalogGraphPage';
-import { GetEntitiesByRefsRequest } from '@backstage/catalog-client';
 
 const navigate = jest.fn();
 
@@ -112,14 +111,9 @@ describe.skip('<CatalogGraphPage/>', () => {
       },
     ],
   };
-  const allEntities: Record<string, object> = {
-    'b:d/c': entityC,
-    'b:d/e': entityE,
-  };
   const catalog = {
     getEntities: jest.fn(),
     getEntityByRef: jest.fn(),
-    getEntitiesByRefs: jest.fn(),
     removeEntityByUid: jest.fn(),
     getLocationById: jest.fn(),
     getLocationByRef: jest.fn(),
@@ -148,10 +142,8 @@ describe.skip('<CatalogGraphPage/>', () => {
   afterEach(() => jest.resetAllMocks());
 
   test('should render without exploding', async () => {
-    catalog.getEntitiesByRefs.mockImplementation(
-      async ({ entityRefs }: GetEntitiesByRefsRequest) => ({
-        items: entityRefs.map(ref => allEntities[ref]),
-      }),
+    catalog.getEntityByRef.mockImplementation(async (n: any) =>
+      n === 'b:d/e' ? entityE : entityC,
     );
 
     await renderInTestApp(wrapper, {
@@ -164,14 +156,12 @@ describe.skip('<CatalogGraphPage/>', () => {
     await expect(screen.findByText('b:d/c')).resolves.toBeInTheDocument();
     await expect(screen.findByText('b:d/e')).resolves.toBeInTheDocument();
     await expect(screen.findAllByTestId('node')).resolves.toHaveLength(2);
-    expect(catalog.getEntitiesByRefs).toHaveBeenCalledTimes(2);
+    expect(catalog.getEntityByRef).toHaveBeenCalledTimes(2);
   });
 
   test('should toggle filters', async () => {
-    catalog.getEntitiesByRefs.mockImplementation(
-      async ({ entityRefs }: GetEntitiesByRefsRequest) => ({
-        items: entityRefs.map(ref => allEntities[ref]),
-      }),
+    catalog.getEntityByRef.mockImplementation(async (n: any) =>
+      n === 'b:d/e' ? entityE : entityC,
     );
 
     await renderInTestApp(wrapper, {
@@ -188,10 +178,8 @@ describe.skip('<CatalogGraphPage/>', () => {
   });
 
   test('should select other entity', async () => {
-    catalog.getEntitiesByRefs.mockImplementation(
-      async ({ entityRefs }: GetEntitiesByRefsRequest) => ({
-        items: entityRefs.map(ref => allEntities[ref]),
-      }),
+    catalog.getEntityByRef.mockImplementation(async (n: any) =>
+      n === 'b:d/e' ? entityE : entityC,
     );
 
     await renderInTestApp(wrapper, {
@@ -208,10 +196,8 @@ describe.skip('<CatalogGraphPage/>', () => {
   });
 
   test('should navigate to entity', async () => {
-    catalog.getEntitiesByRefs.mockImplementation(
-      async ({ entityRefs }: GetEntitiesByRefsRequest) => ({
-        items: entityRefs.map(ref => allEntities[ref]),
-      }),
+    catalog.getEntityByRef.mockImplementation(async (n: any) =>
+      n === 'b:d/e' ? entityE : entityC,
     );
 
     await renderInTestApp(wrapper, {
@@ -229,10 +215,8 @@ describe.skip('<CatalogGraphPage/>', () => {
   });
 
   test('should capture analytics event when selecting other entity', async () => {
-    catalog.getEntitiesByRefs.mockImplementation(
-      async ({ entityRefs }: GetEntitiesByRefsRequest) => ({
-        items: entityRefs.map(ref => allEntities[ref]),
-      }),
+    catalog.getEntityByRef.mockImplementation(async (n: any) =>
+      n === 'b:d/e' ? entityE : entityC,
     );
 
     const analyticsSpy = new MockAnalyticsApi();
@@ -258,10 +242,8 @@ describe.skip('<CatalogGraphPage/>', () => {
   });
 
   test('should capture analytics event when navigating to entity', async () => {
-    catalog.getEntitiesByRefs.mockImplementation(
-      async ({ entityRefs }: GetEntitiesByRefsRequest) => ({
-        items: entityRefs.map(ref => allEntities[ref]),
-      }),
+    catalog.getEntityByRef.mockImplementation(async (n: any) =>
+      n === 'b:d/e' ? entityE : entityC,
     );
 
     const analyticsSpy = new MockAnalyticsApi();

@@ -113,7 +113,6 @@ describe('microsoftAuthenticator', () => {
         tenantId: 'tenantId',
         clientId: 'clientId',
         clientSecret: 'clientSecret',
-        additionalScopes: ['User.Read.All'],
       }),
     });
   });

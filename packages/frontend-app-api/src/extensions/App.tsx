@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import {
-  ExtensionBoundary,
   coreExtensionData,
   createApiExtension,
   createComponentExtension,
@@ -52,13 +50,9 @@ export const App = createExtension({
   output: {
     root: coreExtensionData.reactElement,
   },
-  factory({ node, inputs }) {
+  factory({ inputs }) {
     return {
-      root: (
-        <ExtensionBoundary node={node}>
-          {inputs.root.output.element}
-        </ExtensionBoundary>
-      ),
+      root: inputs.root.output.element,
     };
   },
 });

@@ -22,7 +22,6 @@ import {
 } from '@backstage/frontend-plugin-api';
 import {
   convertLegacyRouteRef,
-  convertLegacyRouteRefs,
   compatWrapper,
 } from '@backstage/core-compat-api';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -66,7 +65,7 @@ export const settingsNavItem = createNavItemExtension({
 export default createPlugin({
   id: 'user-settings',
   extensions: [userSettingsPage, settingsNavItem],
-  routes: convertLegacyRouteRefs({
-    root: settingsRouteRef,
-  }),
+  routes: {
+    root: convertLegacyRouteRef(settingsRouteRef),
+  },
 });

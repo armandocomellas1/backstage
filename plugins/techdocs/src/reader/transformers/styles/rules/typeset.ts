@@ -115,8 +115,4 @@ ${headings.reduce<string>((style, heading) => {
 .md-typeset pre > code::-webkit-scrollbar-thumb:hover {
   background-color: hsla(0, 0%, 0%, 0.87);
 }
-
-.md-typeset code {
-  word-break: keep-all;
-}
 `;

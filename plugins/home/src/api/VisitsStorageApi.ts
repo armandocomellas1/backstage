@@ -130,16 +130,16 @@ export class VisitsStorageApi implements VisitsApi {
     }
 
     return new Promise((resolve, reject) => {
-      const subscription = this.storageApi
+      const subsription = this.storageApi
         .observe$<Visit[]>(storageKey)
         .subscribe({
           next: next => {
             const visits = next.value ?? [];
-            subscription.unsubscribe();
+            subsription.unsubscribe();
             resolve(visits);
           },
           error: err => {
-            subscription.unsubscribe();
+            subsription.unsubscribe();
             reject(err);
           },
         });

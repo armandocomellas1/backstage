@@ -101,20 +101,16 @@ export const ProviderSettingsItem = (props: {
               <Grid item xs={12} sm container>
                 <Grid item xs container direction="column" spacing={2}>
                   <Grid item xs>
-                    {profile.displayName && (
-                      <Typography
-                        variant="subtitle1"
-                        color="textPrimary"
-                        gutterBottom
-                      >
-                        {profile.displayName}
-                      </Typography>
-                    )}
-                    {profile.email && (
-                      <Typography variant="body2" color="textSecondary">
-                        {profile.email}
-                      </Typography>
-                    )}
+                    <Typography
+                      variant="subtitle1"
+                      color="textPrimary"
+                      gutterBottom
+                    >
+                      {profile.displayName}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {profile.email}
+                    </Typography>
                     <Typography variant="body2" color="textSecondary">
                       {description}
                     </Typography>

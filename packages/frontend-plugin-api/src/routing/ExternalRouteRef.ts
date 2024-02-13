@@ -44,7 +44,6 @@ export interface InternalExternalRouteRef<
   readonly version: 'v1';
   getParams(): string[];
   getDescription(): string;
-  getDefaultTarget(): string | undefined;
 
   setId(id: string): void;
 }
@@ -81,14 +80,9 @@ class ExternalRouteRefImpl
   constructor(
     readonly optional: boolean,
     readonly params: string[] = [],
-    readonly defaultTarget: string | undefined,
     creationSite: string,
   ) {
     super(params, creationSite);
-  }
-
-  getDefaultTarget() {
-    return this.defaultTarget;
   }
 }
 
@@ -121,14 +115,6 @@ export function createExternalRouteRef<
    * if they aren't, `useExternalRouteRef` will return `undefined`.
    */
   optional?: TOptional;
-
-  /**
-   * The route (typically in another plugin) that this should map to by default.
-   *
-   * The string is expected to be on the standard `<plugin id>.<route id>` form,
-   * for example `techdocs.docRoot`.
-   */
-  defaultTarget?: string;
 }): ExternalRouteRef<
   keyof TParams extends never
     ? undefined
@@ -140,7 +126,6 @@ export function createExternalRouteRef<
   return new ExternalRouteRefImpl(
     Boolean(options?.optional),
     options?.params as string[] | undefined,
-    options?.defaultTarget,
     describeParentCallSite(),
   ) as ExternalRouteRef<any, any>;
 }

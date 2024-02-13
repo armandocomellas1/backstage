@@ -19,7 +19,10 @@ import {
   FactRetrieverEngine,
 } from './fact/FactRetrieverEngine';
 import { Logger } from 'winston';
-import { DefaultFactRetrieverRegistry } from './fact/FactRetrieverRegistry';
+import {
+  DefaultFactRetrieverRegistry,
+  FactRetrieverRegistry,
+} from './fact/FactRetrieverRegistry';
 import { Config } from '@backstage/config';
 import {
   PluginDatabaseManager,
@@ -30,11 +33,12 @@ import {
   FactChecker,
   FactCheckerFactory,
   FactRetrieverRegistration,
-  FactRetrieverRegistry,
-  PersistenceContext,
   TechInsightCheck,
 } from '@backstage/plugin-tech-insights-node';
-import { initializePersistenceContext } from './persistence';
+import {
+  initializePersistenceContext,
+  PersistenceContext,
+} from './persistence/persistenceContext';
 import { CheckResult } from '@backstage/plugin-tech-insights-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 

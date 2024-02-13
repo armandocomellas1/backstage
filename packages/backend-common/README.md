@@ -9,7 +9,7 @@ Add the library to your backend package:
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/backend add @backstage/backend-common
+yarn add --cwd packages/backend @backstage/backend-common
 ```
 
 then make use of the handlers and logger as necessary:

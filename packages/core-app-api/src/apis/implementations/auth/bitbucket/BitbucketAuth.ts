@@ -52,7 +52,7 @@ export default class BitbucketAuth {
       environment = 'development',
       provider = DEFAULT_PROVIDER,
       oauthRequestApi,
-      defaultScopes = ['account'],
+      defaultScopes = ['team'],
     } = options;
 
     return OAuth2.create({

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { lazy, ComponentType } from 'react';
+import React, { lazy, ComponentType } from 'react';
 import {
   AnyExtensionInputMap,
   ResolvedExtensionInputs,
@@ -23,7 +23,7 @@ import {
 } from '../wiring';
 import { Expand } from '../types';
 import { PortableSchema } from '../schema';
-import { ComponentRef } from '../components';
+import { ExtensionBoundary, ComponentRef } from '../components';
 
 /** @public */
 export function createComponentExtension<
@@ -61,26 +61,28 @@ export function createComponentExtension<
     output: {
       component: createComponentExtension.componentDataRef,
     },
-    factory({ config, inputs }) {
+    factory({ config, inputs, node }) {
+      let ExtensionComponent: ComponentType<TProps>;
+
       if ('sync' in options.loader) {
-        return {
-          component: {
-            ref: options.ref,
-            impl: options.loader.sync({ config, inputs }) as ComponentType,
-          },
-        };
+        ExtensionComponent = options.loader.sync({ config, inputs });
+      } else {
+        const lazyLoader = options.loader.lazy;
+        ExtensionComponent = lazy(() =>
+          lazyLoader({ config, inputs }).then(Component => ({
+            default: Component,
+          })),
+        ) as unknown as ComponentType<TProps>;
       }
-      const lazyLoader = options.loader.lazy;
-      const ExtensionComponent = lazy(() =>
-        lazyLoader({ config, inputs }).then(Component => ({
-          default: Component,
-        })),
-      ) as unknown as ComponentType;
 
       return {
         component: {
           ref: options.ref,
-          impl: ExtensionComponent,
+          impl: props => (
+            <ExtensionBoundary node={node}>
+              <ExtensionComponent {...(props as TProps)} />
+            </ExtensionBoundary>
+          ),
         },
       };
     },

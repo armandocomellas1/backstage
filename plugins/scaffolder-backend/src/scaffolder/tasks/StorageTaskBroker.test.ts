@@ -47,16 +47,10 @@ describe('StorageTaskBroker', () => {
     storage = await createStore();
   });
 
-  const emptyTaskSpec = { spec: { steps: [] } as unknown as TaskSpec };
-  const emptyTaskWithFakeSecretsSpec = {
-    spec: { steps: [] } as unknown as TaskSpec,
-    secrets: fakeSecrets,
-  };
-
   const logger = getVoidLogger();
   it('should claim a dispatched work item', async () => {
     const broker = new StorageTaskBroker(storage, logger);
-    await broker.dispatch(emptyTaskSpec);
+    await broker.dispatch({ spec: {} as TaskSpec });
     await expect(broker.claim()).resolves.toEqual(
       expect.any(TaskManager as any),
     );
@@ -68,7 +62,7 @@ describe('StorageTaskBroker', () => {
 
     await expect(Promise.race([promise, 'waiting'])).resolves.toBe('waiting');
 
-    await broker.dispatch(emptyTaskSpec);
+    await broker.dispatch({ spec: {} as TaskSpec });
     await expect(promise).resolves.toEqual(expect.any(TaskManager as any));
   });
 
@@ -91,14 +85,14 @@ describe('StorageTaskBroker', () => {
 
   it('should store secrets', async () => {
     const broker = new StorageTaskBroker(storage, logger);
-    await broker.dispatch(emptyTaskWithFakeSecretsSpec);
+    await broker.dispatch({ spec: {} as TaskSpec, secrets: fakeSecrets });
     const task = await broker.claim();
     expect(task.secrets).toEqual(fakeSecrets);
   }, 10000);
 
   it('should complete a task', async () => {
     const broker = new StorageTaskBroker(storage, logger);
-    const dispatchResult = await broker.dispatch(emptyTaskSpec);
+    const dispatchResult = await broker.dispatch({ spec: {} as TaskSpec });
     const task = await broker.claim();
     await task.complete('completed');
     const taskRow = await storage.getTask(dispatchResult.taskId);
@@ -107,7 +101,10 @@ describe('StorageTaskBroker', () => {
 
   it('should remove secrets after picking up a task', async () => {
     const broker = new StorageTaskBroker(storage, logger);
-    const dispatchResult = await broker.dispatch(emptyTaskWithFakeSecretsSpec);
+    const dispatchResult = await broker.dispatch({
+      spec: {} as TaskSpec,
+      secrets: fakeSecrets,
+    });
     await broker.claim();
 
     const taskRow = await storage.getTask(dispatchResult.taskId);
@@ -116,7 +113,7 @@ describe('StorageTaskBroker', () => {
 
   it('should fail a task', async () => {
     const broker = new StorageTaskBroker(storage, logger);
-    const dispatchResult = await broker.dispatch(emptyTaskSpec);
+    const dispatchResult = await broker.dispatch({ spec: {} as TaskSpec });
     const task = await broker.claim();
     await task.complete('failed');
     const taskRow = await storage.getTask(dispatchResult.taskId);
@@ -127,7 +124,7 @@ describe('StorageTaskBroker', () => {
     const broker1 = new StorageTaskBroker(storage, logger);
     const broker2 = new StorageTaskBroker(storage, logger);
 
-    const { taskId } = await broker1.dispatch(emptyTaskSpec);
+    const { taskId } = await broker1.dispatch({ spec: {} as TaskSpec });
 
     const logPromise = new Promise<SerializedTaskEvent[]>(resolve => {
       const observedEvents = new Array<SerializedTaskEvent>();
@@ -172,7 +169,7 @@ describe('StorageTaskBroker', () => {
 
   it('should heartbeat', async () => {
     const broker = new StorageTaskBroker(storage, logger);
-    const { taskId } = await broker.dispatch(emptyTaskSpec);
+    const { taskId } = await broker.dispatch({ spec: {} as TaskSpec });
     const task = await broker.claim();
 
     const initialTask = await storage.getTask(taskId);
@@ -190,7 +187,7 @@ describe('StorageTaskBroker', () => {
 
   it('should be update the status to failed if heartbeat fails', async () => {
     const broker = new StorageTaskBroker(storage, logger);
-    const { taskId } = await broker.dispatch(emptyTaskSpec);
+    const { taskId } = await broker.dispatch({ spec: {} as TaskSpec });
     const task = await broker.claim();
 
     jest
@@ -216,7 +213,7 @@ describe('StorageTaskBroker', () => {
 
   it('should list all tasks', async () => {
     const broker = new StorageTaskBroker(storage, logger);
-    const { taskId } = await broker.dispatch(emptyTaskSpec);
+    const { taskId } = await broker.dispatch({ spec: {} as TaskSpec });
 
     const promise = broker.list();
     await expect(promise).resolves.toEqual({
@@ -231,7 +228,7 @@ describe('StorageTaskBroker', () => {
   it('should list only tasks createdBy a specific user', async () => {
     const broker = new StorageTaskBroker(storage, logger);
     const { taskId } = await broker.dispatch({
-      spec: { steps: [] } as unknown as TaskSpec,
+      spec: {} as TaskSpec,
       createdBy: 'user:default/foo',
     });
 

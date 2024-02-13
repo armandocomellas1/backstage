@@ -371,18 +371,6 @@ describe('fetch:template', () => {
           fs.readlink(`${workspacePath}/target/brokenSymlink`),
         ).resolves.toEqual(`.${pathSep}not-a-real-file.txt`);
       });
-
-      it('passed through the token to the fetchContents call', async () => {
-        await action.handler(
-          mockContext({
-            token: 'mockToken',
-          }),
-        );
-
-        expect(mockFetchContents).toHaveBeenCalledWith(
-          expect.objectContaining({ token: 'mockToken' }),
-        );
-      });
     });
   });
 

@@ -183,7 +183,7 @@ export const defaultApis = [
         configApi,
         discoveryApi,
         oauthRequestApi,
-        defaultScopes: ['account'],
+        defaultScopes: ['team'],
         environment: configApi.getOptionalString('auth.environment'),
       }),
   }),

@@ -4,16 +4,14 @@
 
 ```ts
 import { AnalyticsApi } from '@backstage/core-plugin-api';
-import { AnalyticsApi as AnalyticsApi_2 } from '@backstage/frontend-plugin-api';
 import { AnalyticsEvent } from '@backstage/core-plugin-api';
-import { AnalyticsEvent as AnalyticsEvent_2 } from '@backstage/frontend-plugin-api';
 import { Config } from '@backstage/config';
 import { IdentityApi } from '@backstage/core-plugin-api';
 
 // @public
-export class NewRelicBrowser implements AnalyticsApi, AnalyticsApi_2 {
+export class NewRelicBrowser implements AnalyticsApi {
   // (undocumented)
-  captureEvent(event: AnalyticsEvent | AnalyticsEvent_2): void;
+  captureEvent(event: AnalyticsEvent): void;
   // (undocumented)
   static fromConfig(
     config: Config,

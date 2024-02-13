@@ -84,7 +84,6 @@ export const ANNOTATION_KUBERNETES_DASHBOARD_APP =
  */
 export const ANNOTATION_KUBERNETES_DASHBOARD_PARAMETERS =
   'kubernetes.io/dashboard-parameters';
-
 /**
  * Annotation for specifying the assume role use to authenticate with AWS.
  *
@@ -92,14 +91,6 @@ export const ANNOTATION_KUBERNETES_DASHBOARD_PARAMETERS =
  */
 export const ANNOTATION_KUBERNETES_AWS_ASSUME_ROLE =
   'kubernetes.io/aws-assume-role';
-
-/**
- * Annotation for specifying the AWS ID of a cluster when signing STS tokens
- *
- * @public
- */
-export const ANNOTATION_KUBERNETES_AWS_CLUSTER_ID =
-  'kubernetes.io/x-k8s-aws-id';
 
 /**
  * Annotation for specifying an external id when communicating with AWS

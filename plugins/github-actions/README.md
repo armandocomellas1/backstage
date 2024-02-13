@@ -39,7 +39,7 @@ TBD
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage/plugin-github-actions
+yarn add --cwd packages/app @backstage/plugin-github-actions
 ```
 
 2. Add to the app `EntityPage` component:

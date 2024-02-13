@@ -17,7 +17,10 @@
 import { getVoidLogger } from '@backstage/backend-common';
 import { GroupEntity, UserEntity } from '@backstage/catalog-model';
 import { ConfigReader } from '@backstage/config';
-import { GithubCredentialsProvider } from '@backstage/integration';
+import {
+  GithubCredentialsProvider,
+  GithubIntegrationConfig,
+} from '@backstage/integration';
 import { EntityProviderConnection } from '@backstage/plugin-catalog-node';
 import { EventSubscriber } from '@backstage/plugin-events-node';
 import { graphql } from '@octokit/graphql';
@@ -25,7 +28,6 @@ import {
   GithubMultiOrgEntityProvider,
   withLocations,
 } from './GithubMultiOrgEntityProvider';
-import { Logger } from 'winston';
 
 jest.mock('@octokit/graphql');
 
@@ -41,50 +43,11 @@ jest.mock('@backstage/integration', () => ({
 
 describe('GithubMultiOrgEntityProvider', () => {
   describe('read', () => {
-    let mockClient: jest.Mock<any, any, any>;
-    let entityProviderConnection: EntityProviderConnection;
-    let logger: Logger;
-    let gitHubConfig: { host: string };
-    let mockGetCredentials: jest.Mock<any, any, any>;
-    let entityProvider: GithubMultiOrgEntityProvider;
-
-    beforeEach(() => {
-      mockClient = jest.fn();
-      (graphql.defaults as jest.Mock).mockReturnValue(mockClient);
-
-      entityProviderConnection = {
-        applyMutation: jest.fn(),
-        refresh: jest.fn(),
-      };
-
-      logger = getVoidLogger();
-
-      gitHubConfig = { host: 'github.com' };
-
-      mockGetCredentials = jest.fn().mockReturnValue({
-        headers: { token: 'blah' },
-        type: 'app',
-      });
-
-      const githubCredentialsProvider: GithubCredentialsProvider = {
-        getCredentials: mockGetCredentials,
-      };
-
-      entityProvider = new GithubMultiOrgEntityProvider({
-        id: 'my-id',
-        gitHubConfig,
-        githubCredentialsProvider,
-        githubUrl: 'https://github.com',
-        logger,
-        orgs: ['orgA', 'orgB'], // only include for tests that require it
-      });
-
-      entityProvider.connect(entityProviderConnection);
-    });
-
     afterEach(() => jest.resetAllMocks());
 
     it('should read specified orgs', async () => {
+      const mockClient = jest.fn();
+
       mockClient
         .mockResolvedValueOnce({
           organization: {
@@ -191,6 +154,36 @@ describe('GithubMultiOrgEntityProvider', () => {
         });
 
       (graphql.defaults as jest.Mock).mockReturnValue(mockClient);
+
+      const entityProviderConnection: EntityProviderConnection = {
+        applyMutation: jest.fn(),
+        refresh: jest.fn(),
+      };
+
+      const logger = getVoidLogger();
+      const gitHubConfig: GithubIntegrationConfig = {
+        host: 'github.com',
+      };
+
+      const mockGetCredentials = jest.fn().mockReturnValue({
+        headers: { token: 'blah' },
+        type: 'app',
+      });
+
+      const githubCredentialsProvider: GithubCredentialsProvider = {
+        getCredentials: mockGetCredentials,
+      };
+
+      const entityProvider = new GithubMultiOrgEntityProvider({
+        id: 'my-id',
+        gitHubConfig,
+        githubCredentialsProvider,
+        githubUrl: 'https://github.com',
+        logger,
+        orgs: ['orgA', 'orgB'],
+      });
+
+      entityProvider.connect(entityProviderConnection);
 
       await entityProvider.read();
 
@@ -360,6 +353,8 @@ describe('GithubMultiOrgEntityProvider', () => {
         },
       ]);
 
+      const mockClient = jest.fn();
+
       mockClient
         .mockResolvedValueOnce({
           organization: {
@@ -467,11 +462,26 @@ describe('GithubMultiOrgEntityProvider', () => {
 
       (graphql.defaults as jest.Mock).mockReturnValue(mockClient);
 
+      const entityProviderConnection: EntityProviderConnection = {
+        applyMutation: jest.fn(),
+        refresh: jest.fn(),
+      };
+
+      const logger = getVoidLogger();
+      const gitHubConfig: GithubIntegrationConfig = {
+        host: 'github.com',
+      };
+
+      const mockGetCredentials = jest.fn().mockReturnValue({
+        headers: { token: 'blah' },
+        type: 'app',
+      });
+
       const githubCredentialsProvider: GithubCredentialsProvider = {
         getCredentials: mockGetCredentials,
       };
 
-      entityProvider = new GithubMultiOrgEntityProvider({
+      const entityProvider = new GithubMultiOrgEntityProvider({
         id: 'my-id',
         gitHubConfig,
         githubCredentialsProvider,
@@ -631,16 +641,6 @@ describe('GithubMultiOrgEntityProvider', () => {
         ],
         type: 'full',
       });
-    });
-
-    it('should not call applyMutation if an error is thrown', async () => {
-      mockClient.mockImplementationOnce(() => {
-        throw new Error('Network Error');
-      });
-
-      await expect(entityProvider.read()).rejects.toThrow('Network Error');
-
-      expect(entityProviderConnection.applyMutation).not.toHaveBeenCalled();
     });
   });
 

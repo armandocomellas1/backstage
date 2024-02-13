@@ -17,7 +17,6 @@
 import {
   AnyExtensionInputMap,
   ExtensionBoundary,
-  PortableSchema,
   ResolvedExtensionInputs,
   RouteRef,
   coreExtensionData,
@@ -49,7 +48,6 @@ export const catalogExtensionData = {
 // TODO: Figure out how to merge with provided config schema
 /** @alpha */
 export function createEntityCardExtension<
-  TConfig extends { filter?: string },
   TInputs extends AnyExtensionInputMap,
 >(options: {
   namespace?: string;
@@ -57,23 +55,13 @@ export function createEntityCardExtension<
   attachTo?: { id: string; input: string };
   disabled?: boolean;
   inputs?: TInputs;
-  configSchema?: PortableSchema<TConfig>;
   filter?:
     | typeof catalogExtensionData.entityFilterFunction.T
     | typeof catalogExtensionData.entityFilterExpression.T;
   loader: (options: {
-    config: TConfig;
     inputs: Expand<ResolvedExtensionInputs<TInputs>>;
   }) => Promise<JSX.Element>;
 }) {
-  const configSchema =
-    'configSchema' in options
-      ? options.configSchema
-      : (createSchemaFromZod(z =>
-          z.object({
-            filter: z.string().optional(),
-          }),
-        ) as PortableSchema<TConfig>);
   return createExtension({
     kind: 'entity-card',
     namespace: options.namespace,
@@ -89,11 +77,15 @@ export function createEntityCardExtension<
       filterExpression: catalogExtensionData.entityFilterExpression.optional(),
     },
     inputs: options.inputs,
-    configSchema,
+    configSchema: createSchemaFromZod(z =>
+      z.object({
+        filter: z.string().optional(),
+      }),
+    ),
     factory({ config, inputs, node }) {
       const ExtensionComponent = lazy(() =>
         options
-          .loader({ inputs, config })
+          .loader({ inputs })
           .then(element => ({ default: () => element })),
       );
 

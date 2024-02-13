@@ -27,7 +27,6 @@ describe('useEntityStore', () => {
   const catalogApi = {
     getEntities: jest.fn(),
     getEntityByRef: jest.fn(),
-    getEntitiesByRefs: jest.fn(),
     removeEntityByUid: jest.fn(),
     getLocationById: jest.fn(),
     getLocationByRef: jest.fn(),
@@ -64,7 +63,7 @@ describe('useEntityStore', () => {
       },
     };
 
-    catalogApi.getEntitiesByRefs.mockResolvedValue({ items: [entity] });
+    catalogApi.getEntityByRef.mockResolvedValue(entity);
 
     const { result } = renderHook(() => useEntityStore());
 
@@ -84,7 +83,7 @@ describe('useEntityStore', () => {
 
   test('handles request failures', async () => {
     const err = new Error('Hello World');
-    catalogApi.getEntitiesByRefs.mockRejectedValue(err);
+    catalogApi.getEntityByRef.mockRejectedValue(err);
 
     const { result } = renderHook(() => useEntityStore());
 
@@ -101,7 +100,7 @@ describe('useEntityStore', () => {
   });
 
   test('handles loading', async () => {
-    catalogApi.getEntitiesByRefs.mockReturnValue(new Promise(() => {}));
+    catalogApi.getEntityByRef.mockReturnValue(new Promise(() => {}));
 
     const { result } = renderHook(() => useEntityStore());
 
@@ -132,16 +131,8 @@ describe('useEntityStore', () => {
         name: 'name2',
       },
     };
-    const entity3: Entity = {
-      apiVersion: 'v1',
-      kind: 'kind',
-      metadata: {
-        namespace: 'namespace',
-        name: 'name3',
-      },
-    };
 
-    catalogApi.getEntitiesByRefs.mockResolvedValue({ items: [entity1] });
+    catalogApi.getEntityByRef.mockResolvedValue(entity1);
 
     const { result } = renderHook(() => useEntityStore());
 
@@ -158,15 +149,12 @@ describe('useEntityStore', () => {
       });
     });
 
-    catalogApi.getEntitiesByRefs.mockResolvedValue({
-      items: [entity2, entity3],
-    });
+    catalogApi.getEntityByRef.mockResolvedValue(entity2);
 
     act(() => {
       result.current.requestEntities([
         'kind:namespace/name1',
         'kind:namespace/name2',
-        'kind:namespace/name3',
       ]);
     });
 
@@ -177,7 +165,6 @@ describe('useEntityStore', () => {
       expect(entities).toEqual({
         'kind:namespace/name1': entity1,
         'kind:namespace/name2': entity2,
-        'kind:namespace/name3': entity3,
       });
     });
   });
@@ -199,26 +186,13 @@ describe('useEntityStore', () => {
         name: 'name2',
       },
     };
-    const entity3: Entity = {
-      apiVersion: 'v1',
-      kind: 'kind',
-      metadata: {
-        namespace: 'namespace',
-        name: 'name3',
-      },
-    };
 
-    catalogApi.getEntitiesByRefs.mockResolvedValue({
-      items: [entity1, entity2],
-    });
+    catalogApi.getEntityByRef.mockResolvedValue(entity1);
 
     const { result } = renderHook(() => useEntityStore());
 
     act(() => {
-      result.current.requestEntities([
-        'kind:namespace/name1',
-        'kind:namespace/name2',
-      ]);
+      result.current.requestEntities(['kind:namespace/name1']);
     });
 
     await waitFor(() => {
@@ -227,22 +201,13 @@ describe('useEntityStore', () => {
       expect(error).toBeUndefined();
       expect(entities).toEqual({
         'kind:namespace/name1': entity1,
-        'kind:namespace/name2': entity2,
       });
     });
 
-    expect(catalogApi.getEntitiesByRefs).toHaveBeenCalledTimes(1);
-    expect(catalogApi.getEntitiesByRefs).toHaveBeenLastCalledWith({
-      entityRefs: ['kind:namespace/name1', 'kind:namespace/name2'],
-    });
-
-    catalogApi.getEntitiesByRefs.mockResolvedValue({ items: [entity3] });
+    catalogApi.getEntityByRef.mockResolvedValue(entity2);
 
     act(() => {
-      result.current.requestEntities([
-        'kind:namespace/name2',
-        'kind:namespace/name3',
-      ]);
+      result.current.requestEntities(['kind:namespace/name2']);
     });
 
     await waitFor(() => {
@@ -251,13 +216,7 @@ describe('useEntityStore', () => {
       expect(error).toBeUndefined();
       expect(entities).toEqual({
         'kind:namespace/name2': entity2,
-        'kind:namespace/name3': entity3,
       });
-    });
-
-    expect(catalogApi.getEntitiesByRefs).toHaveBeenCalledTimes(2);
-    expect(catalogApi.getEntitiesByRefs).toHaveBeenLastCalledWith({
-      entityRefs: ['kind:namespace/name3'],
     });
 
     act(() => {
@@ -273,6 +232,6 @@ describe('useEntityStore', () => {
       });
     });
 
-    expect(catalogApi.getEntitiesByRefs).toHaveBeenCalledTimes(2);
+    expect(catalogApi.getEntityByRef).toHaveBeenCalledTimes(2);
   });
 });

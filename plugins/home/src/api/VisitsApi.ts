@@ -18,20 +18,6 @@ import { createApiRef } from '@backstage/core-plugin-api';
 
 /**
  * @public
- * The operators that can be used in filter.
- */
-export type Operators = '<' | '<=' | '==' | '!=' | '>' | '>=' | 'contains';
-
-/**
- * @public
- * Type guard for operators.
- */
-export const isOperator = (s: string): s is Operators => {
-  return ['<', '<=', '==', '!=', '>', '>=', 'contains'].includes(s);
-};
-
-/**
- * @public
  * Model for a visit entity.
  */
 export type Visit = {
@@ -98,7 +84,7 @@ export type VisitsApiQueryParams = {
    */
   filterBy?: Array<{
     field: keyof Visit;
-    operator: Operators;
+    operator: '<' | '<=' | '==' | '!=' | '>' | '>=' | 'contains';
     value: string | number;
   }>;
 };

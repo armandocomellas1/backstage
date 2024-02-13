@@ -13,7 +13,7 @@ Start out by installing the plugin in your Backstage app:
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage/plugin-graphiql
+yarn add --cwd packages/app @backstage/plugin-graphiql
 ```
 
 ```diff

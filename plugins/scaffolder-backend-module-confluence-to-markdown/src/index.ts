@@ -21,4 +21,3 @@
  */
 
 export * from './actions';
-export { confluenceToMarkdownModule as default } from './module';

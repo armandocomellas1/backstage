@@ -8,7 +8,7 @@ Add the library to your backend plugin or module package:
 
 ```bash
 # From your Backstage root directory
-yarn --cwd plugins/<plugin>-backend add @backstage/backend-dev-utils
+yarn add --cwd plugins/<plugin>-backend @backstage/backend-dev-utils
 ```
 
 ## Documentation

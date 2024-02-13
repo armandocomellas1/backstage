@@ -20,10 +20,9 @@ import { NunjucksWorkflowRunner } from './NunjucksWorkflowRunner';
 import { Logger } from 'winston';
 import { TemplateActionRegistry } from '../actions';
 import { ScmIntegrations } from '@backstage/integration';
-import { assertError, stringifyError } from '@backstage/errors';
+import { assertError } from '@backstage/errors';
 import { TemplateFilter, TemplateGlobal } from '../../lib';
 import { PermissionEvaluator } from '@backstage/plugin-permission-common';
-
 /**
  * TaskWorkerOptions
  *
@@ -36,7 +35,6 @@ export type TaskWorkerOptions = {
   };
   concurrentTasksLimit: number;
   permissions?: PermissionEvaluator;
-  logger?: Logger;
 };
 
 /**
@@ -75,12 +73,8 @@ export type CreateWorkerOptions = {
  */
 export class TaskWorker {
   private taskQueue: PQueue;
-  private logger: Logger | undefined;
-  private stopWorkers: boolean;
 
   private constructor(private readonly options: TaskWorkerOptions) {
-    this.stopWorkers = false;
-    this.logger = options.logger;
     this.taskQueue = new PQueue({
       concurrency: options.concurrentTasksLimit,
     });
@@ -117,34 +111,14 @@ export class TaskWorker {
     });
   }
 
-  async recoverTasks() {
-    try {
-      await this.options.taskBroker.recoverTasks?.();
-    } catch (err) {
-      this.logger?.error(stringifyError(err));
-    }
-  }
-
   start() {
     (async () => {
-      while (!this.stopWorkers) {
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await this.recoverTasks();
-      }
-    })();
-    (async () => {
-      while (!this.stopWorkers) {
+      for (;;) {
         await this.onReadyToClaimTask();
-        if (!this.stopWorkers) {
-          const task = await this.options.taskBroker.claim();
-          void this.taskQueue.add(() => this.runOneTask(task));
-        }
+        const task = await this.options.taskBroker.claim();
+        this.taskQueue.add(() => this.runOneTask(task));
       }
     })();
-  }
-
-  stop() {
-    this.stopWorkers = true;
   }
 
   protected onReadyToClaimTask(): Promise<void> {

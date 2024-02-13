@@ -37,13 +37,15 @@ describe('collectRouteIds', () => {
       createPlugin({ id: 'test', routes: { ref }, externalRoutes: { extRef } }),
     ]);
     expect(Object.fromEntries(collected.routes)).toEqual({
-      'test.ref': ref,
+      'plugin.test.routes.ref': ref,
     });
     expect(Object.fromEntries(collected.externalRoutes)).toEqual({
-      'test.extRef': extRef,
+      'plugin.test.externalRoutes.extRef': extRef,
     });
 
-    expect(String(ref)).toBe('RouteRef{test.ref}');
-    expect(String(extRef)).toBe('ExternalRouteRef{test.extRef}');
+    expect(String(ref)).toBe('RouteRef{plugin.test.routes.ref}');
+    expect(String(extRef)).toBe(
+      'ExternalRouteRef{plugin.test.externalRoutes.extRef}',
+    );
   });
 });
