@@ -69,40 +69,109 @@ const Chatbot = () => {
     }
   };
 
+  const styles: any = {
+    chatbotContainer: {
+      backgroundColor: '#1E1E1E',
+      color: '#fff',
+      padding: '20px',
+      borderRadius: '8px',
+      width: '400px',
+      margin: '0 auto',
+      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)',
+    },
+    header: {
+      textAlign: 'center',
+      fontSize: '20px',
+      fontWeight: 'bold' as React.CSSProperties['fontWeight'], // Cast to the correct type
+      marginBottom: '15px',
+    },
+    chatBox: {
+      height: '300px',
+      overflowY: 'auto' as 'auto', // Casting to 'auto' for TypeScript compatibility
+      border: '1px solid #444',
+      borderRadius: '6px',
+      padding: '10px',
+      backgroundColor: '#2A2A2A',
+    },
+    messageContainer: {
+      marginBottom: '10px',
+    },
+    userMessage: {
+      backgroundColor: '#4CAF50',
+      color: '#fff',
+      padding: '8px',
+      borderRadius: '5px',
+      marginBottom: '5px',
+      maxWidth: '80%',
+      wordWrap: 'break-word',
+      fontSize: '14px',
+    },
+    aiMessage: {
+      backgroundColor: '#444',
+      color: '#fff',
+      padding: '8px',
+      borderRadius: '5px',
+      marginBottom: '5px',
+      maxWidth: '80%',
+      wordWrap: 'break-word',
+      fontSize: '14px',
+    },
+    inputContainer: {
+      display: 'flex',
+      marginTop: '15px',
+    },
+    inputField: {
+      flex: 1,
+      padding: '10px',
+      backgroundColor: '#333',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      fontSize: '14px',
+      marginRight: '10px',
+    },
+    sendButton: {
+      backgroundColor: '#4CAF50',
+      color: '#fff',
+      padding: '10px 15px',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '14px',
+    },
+  };
+
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Chat with Gemini AI</h2>
-      <div
-        style={{
-          height: '300px',
-          overflowY: 'auto',
-          border: '1px solid #ccc',
-          padding: 10,
-        }}
-      >
+    <div style={styles.chatbotContainer}>
+      <h2 style={styles.header}>Chat with Gemini AI</h2>
+      <div style={styles.chatBox}>
         {messages.map((msg, index) => (
-          <div key={index} style={{ marginBottom: 10 }}>
-            <strong>User:</strong> {msg.user}
-            <br />
-            <strong>AI:</strong> {msg.ai}
-            <br />
+          <div key={index} style={styles.messageContainer}>
+            <div style={styles.userMessage}>
+              <strong>User:</strong> {msg.user}
+            </div>
+            <div style={styles.aiMessage}>
+              <strong>AI:</strong> {msg.ai}
+            </div>
           </div>
         ))}
       </div>
-      <input
-        type="text"
-        value={input}
-        onChange={handleInputChange}
-        placeholder="Ask Gemini AI..."
-        style={{ width: '80%', padding: 5, marginTop: 10 }}
-      />
-      <button
-        onClick={sendMessage}
-        style={{ marginLeft: 10, padding: 5 }}
-        disabled={isLoading}
-      >
-        {isLoading ? 'Thinking...' : 'Send'}
-      </button>
+      <div style={styles.inputContainer}>
+        <input
+          type="text"
+          value={input}
+          onChange={handleInputChange}
+          placeholder="Ask Gemini AI..."
+          style={styles.inputField}
+        />
+        <button
+          onClick={sendMessage}
+          style={styles.sendButton}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Thinking...' : 'Send'}
+        </button>
+      </div>
     </div>
   );
 };
