@@ -16,7 +16,7 @@
 import React, { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const API_KEY = ''; // Replace with your actual API key
+const API_KEY = 'AIzaSyDPqPJo_bpLJf-r1Da3f4U6qw6GlJ5X4rQ'; // Replace with your actual API key
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
@@ -75,8 +75,8 @@ const Chatbot = () => {
       color: '#fff',
       padding: '20px',
       borderRadius: '8px',
-      width: '400px',
-      margin: '0 auto',
+      width: '75%',
+      margin: '10px auto',
       boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)',
     },
     header: {
