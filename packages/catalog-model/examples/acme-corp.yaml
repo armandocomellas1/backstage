@@ -6,3 +6,13 @@ metadata:
 spec:
   targets:
     - ./acme/org.yaml
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: backstage
+spec:
+  profile:
+    email: armandocomellas@gmail.com
+  memberOf:
+    - team-a

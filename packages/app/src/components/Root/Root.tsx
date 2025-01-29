@@ -52,6 +52,7 @@ import Score from '@material-ui/icons/Score';
 import { useApp } from '@backstage/core-plugin-api';
 import BuildIcon from '@material-ui/icons/Build';
 import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
+import ChatIcon from '@mui/icons-material'; // Import a Material-UI icon
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -167,6 +168,11 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarDivider />
         <SidebarDivider />
         <NotificationsSidebarItem />
+        <SidebarItem
+          icon={() => <ChatIcon />}
+          to="chatbot"
+          text="Gemini AI Chat"
+        />
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
