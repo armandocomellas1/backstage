@@ -19,7 +19,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 // import useGeminiAI from './startchat';
 
-const API_KEY = 'AIzaSyDPqPJo_bpLJf-r1Da3f4U6qw6GlJ5X4rQ'; // Replace with your actual API key
+const API_KEY = ''; // Replace with your actual API key
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
@@ -49,7 +49,13 @@ const Chatbot = () => {
             role: 'user',
             parts: [
               {
-                text: `${input}\nPlease format any code response using \`\`\`language\n...\n\`\`\` for proper syntax highlighting.`,
+                text: `${input}
+                  Please format any code response using triple backticks. For example:
+                  - For general code, use \`\`\`language ... \`\`\`
+                  - For YAML files, use \`\`\`yaml ... \`\`\`
+                  - For Dockerfiles, use \`\`\`dockerfile ... \`\`\`
+
+                  This will ensure proper syntax highlighting.`,
               },
             ],
           },
